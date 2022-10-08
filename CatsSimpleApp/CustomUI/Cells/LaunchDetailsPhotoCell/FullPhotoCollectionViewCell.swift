@@ -12,7 +12,7 @@ extension FullPhotoCollectionViewCell {
         contentView.backgroundColor = .clear
         contentView.clipsToBounds = true
         photoImageView?.backgroundColor = .clear
-        photoImageView?.clipsToBounds = true
+        photoImageView?.setCornersRadius(7)
     }
 }
 

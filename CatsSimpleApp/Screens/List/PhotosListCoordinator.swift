@@ -9,7 +9,7 @@ import UIKit
 
 protocol PhotosListCoordinatorType {
     func start()
-    func onLaunchDetails(photoId: String)
+    func onDetails(photoId: String)
 }
 
 final class PhotosListCoordinator: PhotosListCoordinatorType {
@@ -32,7 +32,7 @@ final class PhotosListCoordinator: PhotosListCoordinatorType {
         }
     }
     
-    func onLaunchDetails(photoId: String) {
+    func onDetails(photoId: String) {
         let coordinator = PhotoDetailsCoordinator(
             navigationController: navigationController,
             serviceHolder: serviceHolder,

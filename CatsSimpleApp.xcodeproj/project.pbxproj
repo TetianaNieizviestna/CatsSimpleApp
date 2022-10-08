@@ -248,13 +248,13 @@
 		AB21E26628662D0E0014BDF5 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				AB21E26728662D0E0014BDF5 /* LaunchDetails */,
+				AB21E26728662D0E0014BDF5 /* PhotoDetails */,
 				AB21E26C28662D0E0014BDF5 /* List */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
 		};
-		AB21E26728662D0E0014BDF5 /* LaunchDetails */ = {
+		AB21E26728662D0E0014BDF5 /* PhotoDetails */ = {
 			isa = PBXGroup;
 			children = (
 				AB21E26828662D0E0014BDF5 /* PhotoDetailsViewModel.swift */,
@@ -262,7 +262,7 @@
 				AB21E26A28662D0E0014BDF5 /* PhotoDetailsViewController.swift */,
 				AB21E26B28662D0E0014BDF5 /* PhotoDetails.storyboard */,
 			);
-			path = LaunchDetails;
+			path = PhotoDetails;
 			sourceTree = "<group>";
 		};
 		AB21E26C28662D0E0014BDF5 /* List */ = {
