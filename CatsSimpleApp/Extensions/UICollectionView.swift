@@ -32,6 +32,11 @@ extension UICollectionView {
         
         return cell
     }
+    
+    func setDataSource(_ dataSource: UICollectionViewDataSource, delegate: UICollectionViewDelegate? = nil) {
+        self.dataSource = dataSource
+        self.delegate = delegate
+    }
 }
 
 

@@ -10,6 +10,7 @@ import Foundation
 struct Pagination {
     let limit: Int = 10
     var page: Int = 0
+    var needMore: Bool = true
     
     mutating func increment() {
         page += 1
@@ -17,6 +18,11 @@ struct Pagination {
     
     mutating func reset() {
         page = 0
+        needMore = true
+    }
+    
+    mutating func stopLoading() {
+        needMore = false
     }
 }
 
@@ -39,7 +45,7 @@ struct PhotoURLs: Codable {
 struct Photo: Codable {
     let id: String
     let url: String
-    let breeds: [Breed]
+    let breeds: [Breed]?
     
     enum CodingKeys: String, CodingKey {
         case id

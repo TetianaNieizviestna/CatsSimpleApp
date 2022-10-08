@@ -25,7 +25,7 @@ enum RsPath {
         case .photosByCollection(let id):
             return "/collections/\(id)/photos"
         case .photo(let id):
-            return "/photos/\(id)"
+            return "/images/\(id)"
         }
     }
 }

@@ -21,11 +21,13 @@ extension PhotosListViewController {
             case failed(String)
         }
         
-        let items: [PhotoTableViewCell.Props]
+        let items: [FullPhotoCollectionViewCell.Props]
 
         let selectedSorting: SortingType
         
         let onRefresh: Command
+        let onNextPage: Command
+        
         let onSearch: CommandWith<String>
         let onChangeSorting: CommandWith<SortingType>
         
@@ -34,6 +36,7 @@ extension PhotosListViewController {
             items: [],
             selectedSorting: .random,
             onRefresh: .nop,
+            onNextPage: .nop,
             onSearch: .nop,
             onChangeSorting: .nop
         )
@@ -49,9 +52,9 @@ final class PhotosListViewController: UIViewController {
     @IBOutlet private var searchBar: UISearchBar!
     
     @IBOutlet private var titleLabel: UILabel!
-    @IBOutlet private var tableView: UITableView!
-    
     @IBOutlet private var sortBtn: UIButton!
+    
+    @IBOutlet private var collectionView: UICollectionView!
     
     @IBOutlet private var activityIndicator: UIActivityIndicatorView!
 
@@ -80,11 +83,11 @@ final class PhotosListViewController: UIViewController {
     
     private func showSortingDropDown() {
         let sortingItems = SortingType.all
-        self.dropDown.dataSource = sortingItems.map { $0.title }
-        self.dropDown.anchorView = self.sortBtn
-        self.dropDown.bottomOffset = CGPoint(x: 0, y: self.sortBtn.frame.size.height)
-        self.dropDown.show()
-        self.dropDown.selectionAction = { [weak self] (index: Int, title: String) in
+        dropDown.dataSource = sortingItems.map { $0.title }
+        dropDown.anchorView = sortBtn
+        dropDown.bottomOffset = CGPoint(x: 0, y: sortBtn.frame.size.height)
+        dropDown.show()
+        dropDown.selectionAction = { [weak self] (index: Int, title: String) in
             self?.props.onChangeSorting.perform(with: sortingItems[index])
         }
     }
@@ -92,24 +95,22 @@ final class PhotosListViewController: UIViewController {
     private func render(_ props: Props) {
         self.props = props
         
-        tableView.reloadData()
-
         switch props.state {
         case .initial:
             activityIndicator.stopAnimating()
+            collectionView.reloadData()
         case .loading:
             activityIndicator.startAnimating()
         case .loaded:
             activityIndicator.stopAnimating()
             refreshControl.endRefreshing()
             sortBtn.setTitle("Sort: \(props.selectedSorting.title)", for: .normal)
-
+            collectionView.reloadData()
         case .failed(let error):
             activityIndicator.stopAnimating()
             refreshControl.endRefreshing()
             showAlert(title: "Error", message: error)
         }
-
     }
     
     private func setupUI() {
@@ -120,13 +121,12 @@ final class PhotosListViewController: UIViewController {
     }
 
     private func setupTableView() {
-        tableView.setDataSource(self, delegate: self)
-        tableView.register([PhotoTableViewCell.identifier])
-        tableView.tableFooterView = UIView(frame: .zero)
+        collectionView.setDataSource(self, delegate: self)
+        collectionView.registerCells([FullPhotoCollectionViewCell.identifier])
 
         refreshControl.attributedTitle = NSAttributedString(string: "Loading...")
         refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
-        tableView.addSubview(refreshControl)
+        collectionView.addSubview(refreshControl)
     }
         
     @objc
@@ -139,21 +139,51 @@ final class PhotosListViewController: UIViewController {
     }
 }
 
-extension PhotosListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        props.items[indexPath.row].onSelect.perform()
+extension PhotosListViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        props.items[indexPath.row].didSelect.perform()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.item == props.items.count - 1 {
+            switch props.state {
+            case .loading:
+                break
+            default:
+                props.onNextPage.perform()
+            }
+        }
     }
 }
 
-extension PhotosListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension PhotosListViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return props.items.count
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: PhotoTableViewCell.identifier) as? PhotoTableViewCell else { return UITableViewCell() }
-        cell.render(props.items[indexPath.row])
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell: FullPhotoCollectionViewCell = collectionView.dequeCell(for: indexPath) else {
+            return UICollectionViewCell()
+        }
+        cell.render(props.items[indexPath.item])
         return cell
+    }
+}
+
+extension PhotosListViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let spacing: CGFloat = 10
+        let numberOfColumns: CGFloat = 2
+        let size = (collectionView.frame.width / numberOfColumns) - spacing
+        return CGSize(width: size, height: size)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return .zero
     }
 }
 

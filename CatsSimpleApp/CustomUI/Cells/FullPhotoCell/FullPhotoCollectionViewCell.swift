@@ -12,7 +12,7 @@ extension FullPhotoCollectionViewCell {
         contentView.backgroundColor = .clear
         contentView.clipsToBounds = true
         photoImageView?.backgroundColor = .clear
-        photoImageView?.clipsToBounds = true
+        photoImageView?.setCornersRadius(7)
     }
 }
 
@@ -40,5 +40,4 @@ final class FullPhotoCollectionViewCell: UICollectionViewCell {
     func render(_ props: Props) {
         photoImageView?.setImage(with: props.url)
     }
-
 }

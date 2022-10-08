@@ -59,9 +59,9 @@ final class PhotoDetailsViewModel: PhotoDetailsViewModelType{
     private func updateProps() {
         let props = PhotoDetailsProps(
             state: screenState,
-            title: "", // photo?.photoDescription ?? "",
-            header: .init(items: getHeaderItems()),
-            details: "", // photo?.photoDescription ?? "",
+            title: "Details",
+            header: getHeaderItem(),
+            details: "",
             sections: getSections(),
             onBack: Command { [weak self] in
                 self?.coordinator.dismiss()
@@ -77,8 +77,8 @@ final class PhotoDetailsViewModel: PhotoDetailsViewModelType{
 
 // MARK: Props creation
 extension PhotoDetailsViewModel {
-    private func getHeaderItems() -> [FullPhotoCollectionViewCell.Props] {
-        return [FullPhotoCollectionViewCell.Props.init(url: URL(string: photo?.url ?? ""), didSelect: .nop)]
+    private func getHeaderItem() -> PhotoDetailsHeaderView.Props {
+        return PhotoDetailsHeaderView.Props.init(url: URL(string: photo?.url ?? ""), didSelect: .nop)
     }
     
     private func getSections() -> [Section] {

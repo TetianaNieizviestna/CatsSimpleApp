@@ -80,12 +80,15 @@ final class PhotosListViewModel: PhotosListViewModelType {
         
         photosLoader.loadPhotos(
             pagination: pagination,
-            onSuccess: CommandWith { [weak self] launches in
+            onSuccess: CommandWith { [weak self] photos in
                 guard let self = self else { return }
                 if self.pagination.page == .zero {
-                    self.loadedPhotos = launches
+                    self.loadedPhotos = photos
                 } else {
-                    self.loadedPhotos += launches
+                    self.loadedPhotos += photos
+                }
+                if photos.count < self.pagination.limit {
+                    self.pagination.stopLoading()
                 }
                 self.setScreenState(.loaded)
             },
@@ -96,8 +99,10 @@ final class PhotosListViewModel: PhotosListViewModelType {
     }
     
     private func loadNextPage() {
-        pagination.increment()
-        loadPhotos()
+        if pagination.needMore {
+            pagination.increment()
+            loadPhotos()
+        }
     }
     
     private func refresh() {
@@ -105,15 +110,15 @@ final class PhotosListViewModel: PhotosListViewModelType {
         loadPhotos()
     }
 
-    private func createItems() -> [PhotoTableViewCell.Props] {
+    private func createItems() -> [FullPhotoCollectionViewCell.Props] {
         return loadedPhotos.map { self.createCellProps($0) }
     }
     
-    private func createCellProps(_ photo: Photo) -> PhotoTableViewCell.Props {
+    private func createCellProps(_ photo: Photo) -> FullPhotoCollectionViewCell.Props {
         return .init(
-            photo: photo,
-            onSelect: Command { [weak self] in
-                self?.coordinator.onLaunchDetails(
+            url: URL(string: photo.url),
+            didSelect: Command { [weak self] in
+                self?.coordinator.onDetails(
                     photoId: photo.id
                 )
             }
@@ -132,6 +137,9 @@ final class PhotosListViewModel: PhotosListViewModelType {
             selectedSorting: selectedSortType,
             onRefresh: Command { [weak self] in
                 self?.refresh()
+            },
+            onNextPage: Command { [weak self] in
+                self?.loadNextPage()
             },
             onSearch: CommandWith { [weak self] text in
                 self?.filter(by: text)
