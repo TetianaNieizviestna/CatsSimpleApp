@@ -40,5 +40,4 @@ final class FullPhotoCollectionViewCell: UICollectionViewCell {
     func render(_ props: Props) {
         photoImageView?.setImage(with: props.url)
     }
-
 }

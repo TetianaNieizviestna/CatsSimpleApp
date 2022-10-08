@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="321" id="KGk-i7-Jjw" customClass="FullPhotoTableViewCell" customModule="CatsSimpleApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="321"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="321"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nSP-hK-ucx">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="320"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="nSP-hK-ucx" secondAttribute="height" multiplier="1:1" id="LgY-tC-hUv"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="nSP-hK-ucx" firstAttribute="width" secondItem="nSP-hK-ucx" secondAttribute="height" multiplier="1:1" id="Sx9-KO-qUZ"/>
+                    <constraint firstItem="nSP-hK-ucx" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="d28-rT-gem"/>
+                    <constraint firstItem="nSP-hK-ucx" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="fhB-fr-0XN"/>
+                    <constraint firstAttribute="trailing" secondItem="nSP-hK-ucx" secondAttribute="trailing" id="hlv-hP-G9q"/>
+                    <constraint firstItem="nSP-hK-ucx" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="kz4-J5-VXZ"/>
+                    <constraint firstAttribute="bottom" secondItem="nSP-hK-ucx" secondAttribute="bottom" id="sOM-Ws-4YP"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="photoImageView" destination="nSP-hK-ucx" id="IGH-XS-qYA"/>
+            </connections>
+            <point key="canvasLocation" x="-9.2307692307692299" y="119.07582938388624"/>
+        </tableViewCell>
+    </objects>
+</document>

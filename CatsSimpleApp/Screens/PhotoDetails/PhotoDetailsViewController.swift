@@ -60,7 +60,7 @@ final class PhotoDetailsViewController: UIViewController {
     @IBOutlet private var activityIndicator: UIActivityIndicatorView!
     private var refreshControl = UIRefreshControl()
     
-    private let launchDetailsHeader = PhotoDetailsHeaderView()
+    private let headerView = PhotoDetailsHeaderView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,7 +80,7 @@ final class PhotoDetailsViewController: UIViewController {
         
         titleLabel.text = props.title
         tableView.reloadData()
-        launchDetailsHeader.render(props.header)
+        headerView.render(props.header)
 
         switch props.state {
         case .initial:
@@ -115,15 +115,13 @@ final class PhotoDetailsViewController: UIViewController {
         tableView.addSubview(refreshControl)
         
         updateHeaderFrame()
-        tableView?.tableHeaderView = launchDetailsHeader
+        tableView?.tableHeaderView = headerView
 
     }
     
     private func updateHeaderFrame() {
-        let width = tableView?.frame.size.width ?? 0
-        let height = props.header.items.isEmpty ? .zero : headerHeight
-        launchDetailsHeader.frame = .init(x: .zero, y: .zero, width: width, height: height)
-        
+        let size = tableView?.frame.size.width ?? 0
+        headerView.frame = .init(x: .zero, y: .zero, width: size, height: size)
     }
     
     @objc

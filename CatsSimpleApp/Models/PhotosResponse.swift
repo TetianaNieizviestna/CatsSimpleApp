@@ -45,7 +45,7 @@ struct PhotoURLs: Codable {
 struct Photo: Codable {
     let id: String
     let url: String
-    let breeds: [Breed]
+    let breeds: [Breed]?
     
     enum CodingKeys: String, CodingKey {
         case id
