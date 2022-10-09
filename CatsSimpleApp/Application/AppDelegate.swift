@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna
 //

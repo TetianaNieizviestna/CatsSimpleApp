@@ -1,6 +1,6 @@
 //
 //  RsAPIError.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna
 //

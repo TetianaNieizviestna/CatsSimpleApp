@@ -1,6 +1,6 @@
 //
 //  UIImageView+load.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna
 //

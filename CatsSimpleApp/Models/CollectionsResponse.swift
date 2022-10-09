@@ -7,111 +7,117 @@
 
 import Foundation
 
-extension Collection: DecodableResponse {
-    static func decode(data: Data, urlResponse: URLResponse) throws -> Collection {
-        return try JSONDecoder().decode(Collection.self, from: data)
+extension Breed: DecodableResponse {
+    static func decode(data: Data, urlResponse: URLResponse) throws -> Breed {
+        return try JSONDecoder().decode(Breed.self, from: data)
     }
 }
 
-typealias CollectionsResponse = [Collection]
+typealias BreedsResponse = [Breed]
 
-// MARK: - Collection
-struct Collection: Codable {
-    let id: Int
-    let title: String
-    let collectionDescription: String?
-    let publishedAt: String // Date
-    let lastCollectedAt: String // Date
-    let updatedAt: String // Date
-    let totalPhotos: Int?
-    let collectionPrivate: Bool = false
-    let shareKey: String?
-    let coverPhoto: CoverPhoto?
-    let user: User?
-    let links: CollectionLinks?
+struct Breed: Codable {
+    let id: String
+    let name: String
+    let image: Photo?
+    let weight: Weight?
+    
+    let temperament: String
+    let origin: String
+    let breedDescription: String
+    let lifeSpan: String
+    let indoor: Int
+    let lap: Int?
+    let altNames: String?
+    let energyLevel: Int
+    let grooming: Int
+    let healthIssues: Int
+    let intelligence: Int
+    let sheddingLevel: Int
+    let socialNeeds: Int
+    let strangerFriendly: Int
+    let vocalisation: Int
+    let experimental: Int
+    let hairless: Int
+    let natural: Int
+    let rare: Int
+    let hypoallergenic: Int
+    let catFriendly: Int?
+    let bidability: Int?
+    let cfaURL: String?
+    let vetstreetURL: String?
+    let vcahospitalsURL: String?
+    let wikipediaURL: String?
 
     enum CodingKeys: String, CodingKey {
         case id
-        case title
-        case collectionDescription = "description"
-        case publishedAt = "published_at"
-        case lastCollectedAt = "last_collected_at"
-        case updatedAt = "updated_at"
-        case totalPhotos = "total_photos"
-        case collectionPrivate = "private"
-        case shareKey = "share_key"
-        case coverPhoto = "cover_photo"
-        case user
-        case links
+        case name
+        case image
+        case weight
+        
+        case temperament
+        case origin
+        case breedDescription = "description"
+        case lifeSpan = "life_span"
+        case indoor
+        case lap
+        case altNames = "alt_names"
+        case energyLevel = "energy_level"
+        case grooming
+        case healthIssues = "health_issues"
+        case intelligence
+        case sheddingLevel = "shedding_level"
+        case socialNeeds = "social_needs"
+        case strangerFriendly = "stranger_friendly"
+        case vocalisation
+        case experimental
+        case hairless
+        case natural
+        case rare
+        case hypoallergenic
+        case catFriendly = "cat_friendly"
+        case bidability
+        case cfaURL = "cfa_url"
+        case vetstreetURL = "vetstreet_url"
+        case vcahospitalsURL = "vcahospitals_url"
+        case wikipediaURL = "wikipedia_url"
     }
+    
+    static let initial: Breed = .init(
+        id: "",
+        name: "",
+        image: nil,
+        weight: nil,
+        temperament: "",
+        origin: "",
+        breedDescription: "",
+        lifeSpan: "",
+        indoor: 0,
+        lap: nil,
+        altNames: nil,
+        energyLevel: 0,
+        grooming: 0,
+        healthIssues: 0,
+        intelligence: 0,
+        sheddingLevel: 0,
+        socialNeeds: 0,
+        strangerFriendly: 0,
+        vocalisation: 0,
+        experimental: 0,
+        hairless: 0,
+        natural: 0,
+        rare: 0,
+        hypoallergenic: 0,
+        catFriendly: nil,
+        bidability: nil,
+        cfaURL: nil,
+        vetstreetURL: nil,
+        vcahospitalsURL: nil,
+        wikipediaURL: nil
+    )
 }
 
-// MARK: - CoverPhoto
-struct CoverPhoto: Codable {
-    let id: String
-    let width, height: Int
-    let color: String
-    let blurHash: String
-    let likes: Int
-    let likedByUser: Bool
-    let coverPhotoDescription: String
-    let user: User
-    let urls: PhotoURLs
-    let links: Links
-
-    enum CodingKeys: String, CodingKey {
-        case id, width, height, color
-        case blurHash = "blur_hash"
-        case likes
-        case likedByUser = "liked_by_user"
-        case coverPhotoDescription = "description"
-        case user, urls, links
-    }
+// MARK: - Weight
+struct Weight: Codable {
+    let imperial: String
+    let metric: String
 }
-
-// MARK: - User
-struct User: Codable {
-    let id, username, name: String
-    let portfolioURL: String?
-    let bio: String?
-    let location: String?
-    let totalLikes: Int = 0
-    let totalPhotos: Int = 0
-    let totalCollections: Int = 0
-    let instagramUsername: String?
-    let twitterUsername: String?
-    let profileImage: ProfileImage
-    let links: Links
-    let updatedAt: String?
-
-    enum CodingKeys: String, CodingKey {
-        case id, username, name
-        case portfolioURL = "portfolio_url"
-        case bio, location
-        case totalLikes = "total_likes"
-        case totalPhotos = "total_photos"
-        case totalCollections = "total_collections"
-        case instagramUsername = "instagram_username"
-        case twitterUsername = "twitter_username"
-        case profileImage = "profile_image"
-        case links
-        case updatedAt = "updated_at"
-    }
-}
-
-// MARK: - ProfileImage
-struct ProfileImage: Codable {
-    let small, medium, large: String
-}
-
-// MARK: - CollectionLinks
-struct CollectionLinks: Codable {
-    let linksSelf, html, photos, related: String
-
-    enum CodingKeys: String, CodingKey {
-        case linksSelf = "self"
-        case html, photos, related
-    }
-}
-
-typealias Collections = [Collection]

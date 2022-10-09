@@ -1,6 +1,6 @@
 //
 //  LaunchListViewModel.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna
 //
@@ -32,16 +32,16 @@ enum SortingType: String {
 
 protocol PhotosListViewModelType {
     var stateSubscriber: PassthroughSubject<PhotosListViewController.Props, Never> { get }
-    var diffableDataSource: PhotosTableViewDiffableDataSource! { get }
-    var snapshot: NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props> { get }
+//    var diffableDataSource: PhotosTableViewDiffableDataSource! { get }
+//    var snapshot: NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props> { get }
 
 }
 
 final class PhotosListViewModel: PhotosListViewModelType {
     var stateSubscriber = PassthroughSubject<PhotosListViewController.Props, Never>()
     
-    var diffableDataSource: PhotosTableViewDiffableDataSource!
-    var snapshot = NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props>()
+//    var diffableDataSource: PhotosTableViewDiffableDataSource!
+//    var snapshot = NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props>()
 
     private let coordinator: PhotosListCoordinatorType
     private var photosLoader: PhotosLoaderType

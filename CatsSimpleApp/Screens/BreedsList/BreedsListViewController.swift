@@ -1,17 +1,17 @@
 //
-//  ImageListViewController.swift
-//  RocketsSchedule
+//  BreedsListViewController.swift
+//  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna 
+//  Created by Tetiana Nieizviestna
 //
 
 import UIKit
 import Combine
 import DropDown
 
-class PhotosTableViewDiffableDataSource: UITableViewDiffableDataSource<String?, PhotoTableViewCell.Props> {}
+//class PhotosTableViewDiffableDataSource: UITableViewDiffableDataSource<String?, PhotoTableViewCell.Props> {}
 
-extension PhotosListViewController {
+extension BreedsListViewController {
     struct Props {
         
         let state: ScreenState; enum ScreenState {
@@ -21,7 +21,7 @@ extension PhotosListViewController {
             case failed(String)
         }
         
-        let items: [FullPhotoCollectionViewCell.Props]
+        let items: [BreedTableViewCell.Props]
 
         let selectedSorting: SortingType
         
@@ -43,18 +43,18 @@ extension PhotosListViewController {
     }
 }
 
-final class PhotosListViewController: UIViewController {
+final class BreedsListViewController: UIViewController {
     private var cancellables: Set<AnyCancellable> = []
 
-    var viewModel: PhotosListViewModelType!
+    var viewModel: BreedsListViewModelType!
     var props: Props = .initial
     
     @IBOutlet private var searchBar: UISearchBar!
     
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var sortBtn: UIButton!
-    
-    @IBOutlet private var collectionView: UICollectionView!
+        
+    @IBOutlet private var tableView: UITableView!
     
     @IBOutlet private var activityIndicator: UIActivityIndicatorView!
 
@@ -98,14 +98,14 @@ final class PhotosListViewController: UIViewController {
         switch props.state {
         case .initial:
             activityIndicator.stopAnimating()
-            collectionView.reloadData()
+            tableView.reloadData()
         case .loading:
             activityIndicator.startAnimating()
         case .loaded:
             activityIndicator.stopAnimating()
             refreshControl.endRefreshing()
             sortBtn.setTitle("Sort: \(props.selectedSorting.title)", for: .normal)
-            collectionView.reloadData()
+            tableView.reloadData()
         case .failed(let error):
             activityIndicator.stopAnimating()
             refreshControl.endRefreshing()
@@ -121,12 +121,12 @@ final class PhotosListViewController: UIViewController {
     }
 
     private func setupTableView() {
-        collectionView.setDataSource(self, delegate: self)
-        collectionView.registerCells([FullPhotoCollectionViewCell.identifier])
+        tableView.setDataSource(self, delegate: self)
+        tableView.register([BreedTableViewCell.identifier])
 
         refreshControl.attributedTitle = NSAttributedString(string: "Loading...")
         refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
-        collectionView.addSubview(refreshControl)
+        tableView.addSubview(refreshControl)
     }
         
     @objc
@@ -139,9 +139,9 @@ final class PhotosListViewController: UIViewController {
     }
 }
 
-extension PhotosListViewController: UICollectionViewDelegate {
+extension BreedsListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        props.items[indexPath.row].didSelect.perform()
+        props.items[indexPath.row].onSelect.perform()
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -156,39 +156,28 @@ extension PhotosListViewController: UICollectionViewDelegate {
     }
 }
 
-extension PhotosListViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return props.items.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell: FullPhotoCollectionViewCell = collectionView.dequeCell(for: indexPath) else {
-            return UICollectionViewCell()
-        }
-        cell.render(props.items[indexPath.item])
-        return cell
-    }
-}
-
-extension PhotosListViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        let spacing: CGFloat = 10
-        let numberOfColumns: CGFloat = 2
-        let size = (collectionView.frame.width / numberOfColumns) - spacing
-        return CGSize(width: size, height: size)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return .zero
-    }
-}
-
-extension PhotosListViewController: UISearchBarDelegate {
+extension BreedsListViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         props.onSearch.perform(with: searchText)
+    }
+}
+
+extension BreedsListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cellProps = props.items[indexPath.row]
+        cellProps.onSelect.perform()
+    }
+}
+
+extension BreedsListViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return props.items.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cellProps = props.items[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: BreedTableViewCell.identifier) as? BreedTableViewCell else { return UITableViewCell() }
+        cell.render(cellProps)
+        return cell
     }
 }

@@ -2,7 +2,7 @@
 //  FullPhotoTableViewCell.swift
 //  CatsSimpleApp
 //
-//  Created by Тетяна Нєізвєстна on 08.10.2022.
+//  Created by Tetiana Nieizviestna
 //
 
 import UIKit

@@ -32,7 +32,6 @@
                 <constraint firstItem="5a3-C6-nSf" firstAttribute="leading" secondItem="pFV-vc-pKI" secondAttribute="leading" id="2XK-m0-EyQ"/>
                 <constraint firstItem="5a3-C6-nSf" firstAttribute="top" secondItem="pFV-vc-pKI" secondAttribute="top" id="Usy-Ge-4Y6"/>
                 <constraint firstItem="pFV-vc-pKI" firstAttribute="trailing" secondItem="5a3-C6-nSf" secondAttribute="trailing" id="dHn-53-oRp"/>
-                <constraint firstItem="5a3-C6-nSf" firstAttribute="width" secondItem="5a3-C6-nSf" secondAttribute="height" multiplier="1:1" id="fh0-Gx-QeA"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="92.753623188405811" y="21.428571428571427"/>

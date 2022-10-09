@@ -1,6 +1,6 @@
 //
 //  AppCoordinator.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna 
 //
@@ -14,9 +14,11 @@ final class AppCoordinator {
     
     private var serviceHolder: ServiceHolder!
 
-    private var launchesService: PhotosLoader!
+    private var photosService: PhotosLoader!
+    private var breedsService: BreedsLoader!
 
-    private var startCoordinator: PhotosListCoordinatorType?
+//    private var startCoordinator: PhotosListCoordinatorType?
+    private var startCoordinator: BreedsListCoordinatorType?
 
     init(window: UIWindow) {
         self.window = window
@@ -27,9 +29,11 @@ final class AppCoordinator {
     private func startServices() {
         serviceHolder = ServiceHolder()
         
-        launchesService = PhotosLoader()
-        
-        serviceHolder.add(PhotosLoaderType.self, for: launchesService)
+        photosService = PhotosLoader()
+        breedsService = BreedsLoader()
+
+        serviceHolder.add(PhotosLoaderType.self, for: photosService)
+        serviceHolder.add(BreedsLoaderType.self, for: breedsService)
     }
     
     func start() {
@@ -38,7 +42,8 @@ final class AppCoordinator {
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         
-        startCoordinator = PhotosListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder)
+//        startCoordinator = PhotosListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder)
+        startCoordinator = BreedsListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder)
         startCoordinator?.start()
     }
 }

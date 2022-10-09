@@ -1,6 +1,6 @@
 //
 //  GetPhotosRequest.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna
 //
@@ -12,7 +12,7 @@ final class GetPhotosRequest: RsRequest {
         
     let method: HTTPMethod = .get
     let rsPath: RsPath = .photos
-    let pagination: Pagination
+    private let pagination: Pagination
     
     var queryParameters: [QueryParameter] {
         return [
