@@ -21,14 +21,12 @@ extension PhotoDetailsViewController {
         let header: PhotoDetailsHeaderView.Props
         let details: String
         
-        let sections: [Section]; struct Section {
-            let title: String
-            let items: [Item]
-        }
-        
+        let items: [Item]
+
         enum Item {
             case imageText(ImageTextCell.Props)
             case text(TextDescriptionCell.Props)
+            case breed(BreedTableViewCell.Props)
         }
         
         let onBack: Command
@@ -39,7 +37,7 @@ extension PhotoDetailsViewController {
             title: "",
             header: .initial,
             details: "",
-            sections: [],
+            items: [],
             onBack: .nop,
             onRefresh: .nop
         )
@@ -106,7 +104,8 @@ final class PhotoDetailsViewController: UIViewController {
         tableView.setDataSource(self, delegate: self)
         tableView.register([
             ImageTextCell.identifier,
-            TextDescriptionCell.identifier
+            TextDescriptionCell.identifier,
+            BreedTableViewCell.identifier
         ])
         tableView.tableFooterView = UIView(frame: .zero)
 
@@ -146,26 +145,12 @@ extension PhotoDetailsViewController: UITableViewDelegate {
 
 extension PhotoDetailsViewController: UITableViewDataSource {
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return props.sections[section].title
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return props.sections.count
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return props.sections[section].title.isEmpty ? 0.01 : 20
-    }
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 10.0
-    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return props.sections[section].items.count
+        return props.items.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch props.sections[indexPath.section].items[indexPath.row] {
+        switch props.items[indexPath.row] {
         case .imageText(let cellProps):
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ImageTextCell.identifier) as? ImageTextCell else { return UITableViewCell() }
             cell.render(cellProps)
@@ -174,6 +159,11 @@ extension PhotoDetailsViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TextDescriptionCell.identifier) as? TextDescriptionCell else { return UITableViewCell() }
             cell.render(cellProps)
             return cell
+        case .breed(let cellProps):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: BreedTableViewCell.identifier) as? BreedTableViewCell else { return UITableViewCell() }
+            cell.render(cellProps)
+            return cell
+
         }
     }
 }

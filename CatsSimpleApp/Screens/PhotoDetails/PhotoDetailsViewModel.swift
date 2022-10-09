@@ -15,7 +15,6 @@ protocol PhotoDetailsViewModelType {
 }
 
 final class PhotoDetailsViewModel: PhotoDetailsViewModelType{
-    typealias Section = PhotoDetailsViewController.Props.Section
     var stateSubscriber = PassthroughSubject<PhotoDetailsProps, Never>()
 
     private let coordinator: PhotoDetailsCoordinatorType
@@ -62,7 +61,7 @@ final class PhotoDetailsViewModel: PhotoDetailsViewModelType{
             title: "Details",
             header: getHeaderItem(),
             details: "",
-            sections: getSections(),
+            items: getItems(),
             onBack: Command { [weak self] in
                 self?.coordinator.dismiss()
             }, onRefresh: Command { [weak self] in
@@ -79,7 +78,17 @@ extension PhotoDetailsViewModel {
         return PhotoDetailsHeaderView.Props.init(url: URL(string: photo?.url ?? ""), didSelect: .nop)
     }
     
-    private func getSections() -> [Section] {
+    private func getItems() -> [PhotoDetailsProps.Item] {
+        if let breeds = photo?.breeds {
+            return breeds.map { breed in
+                return .breed(.init(
+                    breed: breed,
+                    onSelect: Command { [weak self] in
+                        self?.coordinator.onBreedDetails(breed)
+                    })
+                )
+            }
+        }
         return []
     }
 }

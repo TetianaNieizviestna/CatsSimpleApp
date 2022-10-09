@@ -9,6 +9,7 @@ import UIKit
 
 protocol PhotoDetailsCoordinatorType {
     func dismiss()
+    func onBreedDetails(_ breed: Breed)
 }
 
 final class PhotoDetailsCoordinator: PhotoDetailsCoordinatorType {
@@ -32,5 +33,10 @@ final class PhotoDetailsCoordinator: PhotoDetailsCoordinatorType {
     
     func dismiss() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    func onBreedDetails(_ breed: Breed) {
+        let coordinator = BreedDetailsCoordinator(navigationController: navigationController, serviceHolder: serviceHolder, breed: breed)
+        coordinator.start()
     }
 }
