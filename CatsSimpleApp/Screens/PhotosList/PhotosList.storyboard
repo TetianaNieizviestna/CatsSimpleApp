@@ -17,6 +17,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zoQ-6W-HWT">
+                                <rect key="frame" x="15" y="67" width="19.5" height="22"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" image="arrow.backward" catalog="system"/>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cats" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XDO-BX-Oyb">
                                 <rect key="frame" x="15" y="63" width="384" height="30"/>
                                 <constraints>
@@ -26,15 +31,8 @@
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="NeW-h7-B2J">
-                                <rect key="frame" x="15" y="108" width="384" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="Rrv-Qp-UhM"/>
-                                </constraints>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="c0s-FV-ehJ">
-                                <rect key="frame" x="15" y="167" width="384" height="695"/>
+                                <rect key="frame" x="15" y="108" width="384" height="754"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="dMJ-vz-nbB">
                                     <size key="itemSize" width="128" height="128"/>
@@ -70,24 +68,23 @@
                         <constraints>
                             <constraint firstItem="aRR-aR-fwh" firstAttribute="centerY" secondItem="R4B-ho-pxa" secondAttribute="centerY" id="6jg-Xo-BME"/>
                             <constraint firstItem="aRR-aR-fwh" firstAttribute="centerX" secondItem="R4B-ho-pxa" secondAttribute="centerX" id="8mD-Dr-uE1"/>
-                            <constraint firstItem="c0s-FV-ehJ" firstAttribute="top" secondItem="NeW-h7-B2J" secondAttribute="bottom" constant="15" id="E4h-3u-B8p"/>
+                            <constraint firstItem="zoQ-6W-HWT" firstAttribute="centerY" secondItem="XDO-BX-Oyb" secondAttribute="centerY" id="FoG-h4-0vr"/>
                             <constraint firstItem="c0s-FV-ehJ" firstAttribute="leading" secondItem="R4B-ho-pxa" secondAttribute="leading" constant="15" id="JMM-3r-pj7"/>
                             <constraint firstItem="R4B-ho-pxa" firstAttribute="trailing" secondItem="ooL-Wz-z3d" secondAttribute="trailing" constant="25" id="LP1-gZ-Y6Q"/>
-                            <constraint firstItem="NeW-h7-B2J" firstAttribute="top" secondItem="XDO-BX-Oyb" secondAttribute="bottom" constant="15" id="OzO-3T-Wyq"/>
                             <constraint firstItem="R4B-ho-pxa" firstAttribute="bottom" secondItem="c0s-FV-ehJ" secondAttribute="bottom" id="P5W-XH-bfC"/>
-                            <constraint firstItem="R4B-ho-pxa" firstAttribute="trailing" secondItem="NeW-h7-B2J" secondAttribute="trailing" constant="15" id="V7Z-OY-bSo"/>
                             <constraint firstItem="XDO-BX-Oyb" firstAttribute="leading" secondItem="R4B-ho-pxa" secondAttribute="leading" constant="15" id="dFA-mm-sWb"/>
                             <constraint firstItem="ooL-Wz-z3d" firstAttribute="centerY" secondItem="XDO-BX-Oyb" secondAttribute="centerY" id="fHa-6A-hnW"/>
+                            <constraint firstItem="zoQ-6W-HWT" firstAttribute="leading" secondItem="R4B-ho-pxa" secondAttribute="leading" constant="15" id="h0L-iO-31r"/>
                             <constraint firstItem="R4B-ho-pxa" firstAttribute="trailing" secondItem="c0s-FV-ehJ" secondAttribute="trailing" constant="15" id="hPY-Zd-Qb7"/>
-                            <constraint firstItem="NeW-h7-B2J" firstAttribute="leading" secondItem="R4B-ho-pxa" secondAttribute="leading" constant="15" id="mcz-jQ-qes"/>
                             <constraint firstItem="XDO-BX-Oyb" firstAttribute="top" secondItem="R4B-ho-pxa" secondAttribute="top" constant="15" id="oOI-Ga-vlS"/>
                             <constraint firstItem="R4B-ho-pxa" firstAttribute="trailing" secondItem="XDO-BX-Oyb" secondAttribute="trailing" constant="15" id="qkL-wD-9tk"/>
+                            <constraint firstItem="c0s-FV-ehJ" firstAttribute="top" secondItem="XDO-BX-Oyb" secondAttribute="bottom" constant="15" id="t7c-yc-Vpm"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="aRR-aR-fwh" id="Jiy-ZH-L23"/>
+                        <outlet property="backBtn" destination="zoQ-6W-HWT" id="aPh-uL-xaj"/>
                         <outlet property="collectionView" destination="c0s-FV-ehJ" id="wVn-wp-ChW"/>
-                        <outlet property="searchBar" destination="NeW-h7-B2J" id="1Jj-ei-mUf"/>
                         <outlet property="sortBtn" destination="ooL-Wz-z3d" id="2uQ-RI-fX2"/>
                         <outlet property="titleLabel" destination="XDO-BX-Oyb" id="S53-BH-18U"/>
                     </connections>
@@ -98,6 +95,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="arrow.backward" catalog="system" width="128" height="95"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

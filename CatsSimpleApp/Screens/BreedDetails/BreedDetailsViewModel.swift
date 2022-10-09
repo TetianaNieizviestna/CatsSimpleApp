@@ -13,7 +13,6 @@ typealias BreedDetailsProps = BreedDetailsViewController.Props
 
 protocol BreedDetailsViewModelType {
     func getProps() -> BreedDetailsProps
-
 }
 
 final class BreedDetailsViewModel: BreedDetailsViewModelType{
@@ -50,7 +49,13 @@ final class BreedDetailsViewModel: BreedDetailsViewModelType{
 // MARK: Props creation
 extension BreedDetailsViewModel {
     private func getHeaderItem() -> PhotoDetailsHeaderView.Props {
-        return PhotoDetailsHeaderView.Props.init(url: URL(string: breed.image?.url ?? ""), didSelect: .nop)
+        return PhotoDetailsHeaderView.Props.init(
+            url: URL(string: breed.image?.url ?? ""),
+            didSelect: Command { [weak self] in
+                guard let self = self else { return }
+                self.coordinator.onPhotosList(breed: self.breed)
+            }
+        )
     }
     
     private func getItems() -> [BreedDetailsProps.Item] {

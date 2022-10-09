@@ -32,17 +32,11 @@ enum SortingType: String {
 
 protocol PhotosListViewModelType {
     var stateSubscriber: PassthroughSubject<PhotosListViewController.Props, Never> { get }
-//    var diffableDataSource: PhotosTableViewDiffableDataSource! { get }
-//    var snapshot: NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props> { get }
-
 }
 
 final class PhotosListViewModel: PhotosListViewModelType {
     var stateSubscriber = PassthroughSubject<PhotosListViewController.Props, Never>()
     
-//    var diffableDataSource: PhotosTableViewDiffableDataSource!
-//    var snapshot = NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props>()
-
     private let coordinator: PhotosListCoordinatorType
     private var photosLoader: PhotosLoaderType
 
@@ -61,10 +55,11 @@ final class PhotosListViewModel: PhotosListViewModelType {
         }
     }
     
-    private var searchQuery: String?
-        
-    init(_ coordinator: PhotosListCoordinatorType, serviceHolder: ServiceHolder) {
+    private var breed: Breed?
+    
+    init(_ coordinator: PhotosListCoordinatorType, serviceHolder: ServiceHolder, breed: Breed?) {
         self.coordinator = coordinator
+        self.breed = breed
         
         photosLoader = serviceHolder.get(by: PhotosLoaderType.self)
         loadPhotos()
@@ -80,6 +75,7 @@ final class PhotosListViewModel: PhotosListViewModelType {
         
         photosLoader.loadPhotos(
             pagination: pagination,
+            breedId: breed?.id,
             onSuccess: CommandWith { [weak self] photos in
                 guard let self = self else { return }
                 if self.pagination.page == .zero {
@@ -126,13 +122,13 @@ final class PhotosListViewModel: PhotosListViewModelType {
     }
     
     private func filter(by searchText: String) {
-        searchQuery = searchText
         updateProps()
     }
     
     private func updateProps() {
         let props = PhotosListProps(
             state: screenState,
+            title: breed?.name ?? "Cats",
             items: createItems(),
             selectedSorting: selectedSortType,
             onRefresh: Command { [weak self] in
@@ -141,11 +137,11 @@ final class PhotosListViewModel: PhotosListViewModelType {
             onNextPage: Command { [weak self] in
                 self?.loadNextPage()
             },
-            onSearch: CommandWith { [weak self] text in
-                self?.filter(by: text)
-            },
             onChangeSorting: CommandWith { [weak self] type in
                 self?.selectedSortType = type
+            },
+            onBack: Command {[weak self] in
+                self?.coordinator.onBack()
             }
         )
         

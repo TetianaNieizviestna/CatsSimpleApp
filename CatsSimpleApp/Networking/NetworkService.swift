@@ -10,7 +10,7 @@ import Combine
 
 protocol NetworkProviderType: Service {
     func loadBreeds(pagination: Pagination, completion: CommandWith<Result<[Breed], Error>>)
-    func loadPhotos(pagination: Pagination, completion: CommandWith<Result<[Photo], Error>>)
+    func loadPhotos(pagination: Pagination, breedId: String?, completion: CommandWith<Result<[Photo], Error>>)
     func loadPhoto(id: String, completion: CommandWith<Result<Photo, Error>>)
 }
 
@@ -25,8 +25,8 @@ final class NetworkProvider: NetworkProviderType {
         }
     }
     
-    func loadPhotos(pagination: Pagination, completion: CommandWith<Result<[Photo], Error>>) {
-        let request = GetPhotosRequest(pagination: pagination)
+    func loadPhotos(pagination: Pagination, breedId: String?, completion: CommandWith<Result<[Photo], Error>>) {
+        let request = GetPhotosRequest(pagination: pagination, breedId: breedId)
 
         fetcher.send(request) { result in
             completion.perform(with: result)

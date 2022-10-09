@@ -12,16 +12,24 @@ final class GetPhotosRequest: RsRequest {
         
     let method: HTTPMethod = .get
     let rsPath: RsPath = .photos
+    
     private let pagination: Pagination
+    private let breedId: String?
     
     var queryParameters: [QueryParameter] {
-        return [
+        var parameters: [QueryParameter] = [
             .init(key: "limit", value: "\(pagination.limit)"),
             .init(key: "page", value: "\(pagination.page)"),
         ]
+        
+        if let breedId = breedId {
+            parameters.append(.init(key: "breed_id", value: breedId))
+        }
+        return parameters
     }
     
-    init(pagination: Pagination) {
+    init(pagination: Pagination, breedId: String?) {
         self.pagination = pagination
+        self.breedId = breedId
     }
 }

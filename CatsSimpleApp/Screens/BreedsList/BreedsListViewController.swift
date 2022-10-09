@@ -20,21 +20,17 @@ extension BreedsListViewController {
         }
         
         let items: [BreedTableViewCell.Props]
-
-        let selectedSorting: SortingType
         
         let onRefresh: Command
         let onNextPage: Command
-        
-        let onChangeSorting: CommandWith<SortingType>
+        let onPhotosList: Command
         
         static let initial: Props = .init(
             state: .initial,
             items: [],
-            selectedSorting: .random,
             onRefresh: .nop,
             onNextPage: .nop,
-            onChangeSorting: .nop
+            onPhotosList: .nop
         )
     }
 }
@@ -46,7 +42,7 @@ final class BreedsListViewController: UIViewController {
     var props: Props = .initial
         
     @IBOutlet private var titleLabel: UILabel!
-    @IBOutlet private var sortBtn: UIButton!
+    @IBOutlet private var randomCatsBtn: UIButton!
         
     @IBOutlet private var tableView: UITableView!
     
@@ -55,8 +51,6 @@ final class BreedsListViewController: UIViewController {
     private var refreshControl = UIRefreshControl()
     private var propsSubscriber: AnyCancellable?
     
-    private let dropDown = DropDown()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -67,23 +61,12 @@ final class BreedsListViewController: UIViewController {
                 self?.render(newProps)
             })
         
-        sortBtn
+        randomCatsBtn
             .publisher(for: .touchUpInside)
             .sink { [weak self] _ in
-                self?.showSortingDropDown()
+                self?.props.onPhotosList.perform()
             }
             .store(in: &cancellables)
-    }
-    
-    private func showSortingDropDown() {
-        let sortingItems = SortingType.all
-        dropDown.dataSource = sortingItems.map { $0.title }
-        dropDown.anchorView = sortBtn
-        dropDown.bottomOffset = CGPoint(x: 0, y: sortBtn.frame.size.height)
-        dropDown.show()
-        dropDown.selectionAction = { [weak self] (index: Int, title: String) in
-            self?.props.onChangeSorting.perform(with: sortingItems[index])
-        }
     }
     
     private func render(_ props: Props) {
@@ -98,7 +81,6 @@ final class BreedsListViewController: UIViewController {
         case .loaded:
             activityIndicator.stopAnimating()
             refreshControl.endRefreshing()
-            sortBtn.setTitle("Sort: \(props.selectedSorting.title)", for: .normal)
             tableView.reloadData()
         case .failed(let error):
             activityIndicator.stopAnimating()
@@ -110,7 +92,7 @@ final class BreedsListViewController: UIViewController {
     private func setupUI() {
         activityIndicator.hidesWhenStopped = true
         setupTableView()
-        sortBtn.setCornersRadius(3)
+        randomCatsBtn.setCornersRadius(3)
     }
 
     private func setupTableView() {

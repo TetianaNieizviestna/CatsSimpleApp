@@ -39,7 +39,6 @@ final class BreedDetailsViewController: UIViewController {
     private var cancellables: Set<AnyCancellable> = []
 
     private let headerHeight: CGFloat = 196
-//    private var propsSubscriber: AnyCancellable?
 
     var viewModel: BreedDetailsViewModelType!
     var props: Props = .initial
@@ -54,11 +53,6 @@ final class BreedDetailsViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         
-//        propsSubscriber = viewModel.stateSubscriber
-//            .receive(on: DispatchQueue.main)
-//            .sink(receiveValue: { [weak self] newProps in
-//                self?.render(newProps)
-//            })
         render(viewModel.getProps())
     }
     

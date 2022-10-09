@@ -9,8 +9,6 @@ import UIKit
 import Combine
 import DropDown
 
-//class PhotosTableViewDiffableDataSource: UITableViewDiffableDataSource<String?, PhotoTableViewCell.Props> {}
-
 extension PhotosListViewController {
     struct Props {
         
@@ -21,6 +19,7 @@ extension PhotosListViewController {
             case failed(String)
         }
         
+        let title: String
         let items: [FullPhotoCollectionViewCell.Props]
 
         let selectedSorting: SortingType
@@ -28,17 +27,18 @@ extension PhotosListViewController {
         let onRefresh: Command
         let onNextPage: Command
         
-        let onSearch: CommandWith<String>
         let onChangeSorting: CommandWith<SortingType>
+        let onBack: Command
         
         static let initial: Props = .init(
             state: .initial,
+            title: "",
             items: [],
             selectedSorting: .random,
             onRefresh: .nop,
             onNextPage: .nop,
-            onSearch: .nop,
-            onChangeSorting: .nop
+            onChangeSorting: .nop,
+            onBack: .nop
         )
     }
 }
@@ -49,11 +49,10 @@ final class PhotosListViewController: UIViewController {
     var viewModel: PhotosListViewModelType!
     var props: Props = .initial
     
-    @IBOutlet private var searchBar: UISearchBar!
-    
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var sortBtn: UIButton!
     
+    @IBOutlet private var backBtn: UIButton!
     @IBOutlet private var collectionView: UICollectionView!
     
     @IBOutlet private var activityIndicator: UIActivityIndicatorView!
@@ -73,6 +72,13 @@ final class PhotosListViewController: UIViewController {
                 self?.render(newProps)
             })
         
+        backBtn
+            .publisher(for: .touchUpInside)
+            .sink { [weak self] _ in
+                self?.props.onBack.perform()
+            }
+            .store(in: &cancellables)
+
         sortBtn
             .publisher(for: .touchUpInside)
             .sink { [weak self] _ in
@@ -95,6 +101,7 @@ final class PhotosListViewController: UIViewController {
     private func render(_ props: Props) {
         self.props = props
         
+        titleLabel.text = props.title
         switch props.state {
         case .initial:
             activityIndicator.stopAnimating()
@@ -115,7 +122,6 @@ final class PhotosListViewController: UIViewController {
     
     private func setupUI() {
         activityIndicator.hidesWhenStopped = true
-        searchBar.delegate = self
         setupTableView()
         sortBtn.setCornersRadius(3)
     }
@@ -184,11 +190,5 @@ extension PhotosListViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return .zero
-    }
-}
-
-extension PhotosListViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        props.onSearch.perform(with: searchText)
     }
 }

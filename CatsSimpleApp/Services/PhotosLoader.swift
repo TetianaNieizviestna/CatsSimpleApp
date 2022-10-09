@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 protocol PhotosLoaderType: Service {
-    func loadPhotos(pagination: Pagination, onSuccess: CommandWith<[Photo]>, onFailure: CommandWith<String>)
+    func loadPhotos(pagination: Pagination, breedId: String?, onSuccess: CommandWith<[Photo]>, onFailure: CommandWith<String>)
     func loadPhotoDetails(id: String, onSuccess: CommandWith<Photo>, onFailure: CommandWith<String>)
 }
 
@@ -23,9 +23,10 @@ final class PhotosLoader: PhotosLoaderType {
         networkProvider = NetworkProvider()
     }
     
-    func loadPhotos(pagination: Pagination, onSuccess: CommandWith<[Photo]>, onFailure: CommandWith<String>) {
+    func loadPhotos(pagination: Pagination, breedId: String?, onSuccess: CommandWith<[Photo]>, onFailure: CommandWith<String>) {
         networkProvider.loadPhotos(
             pagination: pagination,
+            breedId: breedId,
             completion: CommandWith { result in
                 switch result {
                 case .success(let data):

@@ -26,13 +26,11 @@ final class PhotoDetailsCoordinator: PhotoDetailsCoordinatorType {
     
     func start() {
         if let controller = controller {
-            controller.modalTransitionStyle = .coverVertical
-            controller.modalPresentationStyle = .overFullScreen
-            navigationController?.present(controller, animated: true, completion: nil)
+            navigationController?.pushViewController(controller, animated: true)
         }
     }
     
     func dismiss() {
-        self.controller?.dismiss(animated: false) 
+        navigationController?.popViewController(animated: true)
     }
 }

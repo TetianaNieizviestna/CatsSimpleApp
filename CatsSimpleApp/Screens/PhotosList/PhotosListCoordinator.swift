@@ -10,6 +10,7 @@ import UIKit
 protocol PhotosListCoordinatorType {
     func start()
     func onDetails(photoId: String)
+    func onBack()
 }
 
 final class PhotosListCoordinator: PhotosListCoordinatorType {
@@ -17,13 +18,13 @@ final class PhotosListCoordinator: PhotosListCoordinatorType {
     private let navigationController: UINavigationController?
     private var serviceHolder: ServiceHolder!
     
-    init(navigationController: UINavigationController?, serviceHolder: ServiceHolder) {
+    init(navigationController: UINavigationController?, serviceHolder: ServiceHolder, breed: Breed?) {
         self.navigationController = navigationController
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.navigationBar.isHidden = true
         
         self.serviceHolder = serviceHolder
-        controller?.viewModel = PhotosListViewModel(self, serviceHolder: serviceHolder)
+        controller?.viewModel = PhotosListViewModel(self, serviceHolder: serviceHolder, breed: breed)
     }
     
     func start() {
@@ -39,6 +40,10 @@ final class PhotosListCoordinator: PhotosListCoordinatorType {
             id: photoId
         )
         coordinator.start()
+    }
+    
+    func onBack() {
+        navigationController?.popViewController(animated: true)
     }
 }
 

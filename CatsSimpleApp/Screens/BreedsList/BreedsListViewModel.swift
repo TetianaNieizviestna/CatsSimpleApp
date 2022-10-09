@@ -23,13 +23,7 @@ final class BreedsListViewModel: BreedsListViewModelType {
 
     private var loadedBreeds: [Breed] = []
     private var pagination = Pagination()
-    
-    private var selectedSortType: SortingType = .random {
-        didSet {
-            refresh()
-        }
-    }
-    
+        
     private var screenState: BreedsListProps.ScreenState = .initial {
         didSet {
             updateProps()
@@ -102,15 +96,14 @@ final class BreedsListViewModel: BreedsListViewModelType {
         let props = BreedsListProps(
             state: screenState,
             items: createItems(),
-            selectedSorting: selectedSortType,
             onRefresh: Command { [weak self] in
                 self?.refresh()
             },
             onNextPage: Command { [weak self] in
                 self?.loadNextPage()
             },
-            onChangeSorting: CommandWith { [weak self] type in
-                self?.selectedSortType = type
+            onPhotosList: Command { [weak self] in
+                self?.coordinator.onPhotosList()
             }
         )
         

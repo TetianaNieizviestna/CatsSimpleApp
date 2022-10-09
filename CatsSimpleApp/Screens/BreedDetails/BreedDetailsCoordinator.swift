@@ -9,6 +9,7 @@ import UIKit
 
 protocol BreedDetailsCoordinatorType {
     func dismiss()
+    func onPhotosList(breed: Breed?)
     func onPhoto(_ photo: Photo)
     func onUrl(_ urlString: String)
 }
@@ -38,6 +39,11 @@ final class BreedDetailsCoordinator: BreedDetailsCoordinatorType {
     
     func onPhoto(_ photo: Photo) {
         let coordinator = PhotoDetailsCoordinator(navigationController: navigationController, serviceHolder: serviceHolder, id: photo.id)
+        coordinator.start()
+    }
+    
+    func onPhotosList(breed: Breed?) {
+        let coordinator = PhotosListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder, breed: breed)
         coordinator.start()
     }
     

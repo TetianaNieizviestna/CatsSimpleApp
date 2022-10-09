@@ -11,6 +11,7 @@ protocol BreedsListCoordinatorType {
     func start()
     func onBreedDetails(_ breed: Breed)
     func dismiss()
+    func onPhotosList()
 }
 
 final class BreedsListCoordinator: BreedsListCoordinatorType {
@@ -39,6 +40,11 @@ final class BreedsListCoordinator: BreedsListCoordinatorType {
             serviceHolder: serviceHolder,
             breed: breed
         )
+        coordinator.start()
+    }
+    
+    func onPhotosList() {
+        let coordinator = PhotosListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder, breed: nil)
         coordinator.start()
     }
     
