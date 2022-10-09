@@ -59,7 +59,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" text="24 Feb 2021" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qor-PP-q20">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" text="24 Feb 2021" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qor-PP-q20">
                                 <rect key="frame" x="5" y="62.666666666666679" width="276" height="14.333333333333336"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.1960784314" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="deviceRGB"/>
@@ -101,8 +101,8 @@
                 <outlet property="descriptionLabel" destination="LNL-sf-4Fd" id="JOm-S1-u2E"/>
                 <outlet property="imageViewWidthConstraint" destination="YT6-RC-evK" id="ITp-HR-8hh"/>
                 <outlet property="loadedImageView" destination="HQi-4p-ySw" id="63l-Op-SRo"/>
+                <outlet property="originBgView" destination="INb-4C-fsr" id="2WM-uf-lqu"/>
                 <outlet property="originLabel" destination="CgW-NV-653" id="g5J-rs-HwU"/>
-                <outlet property="successBgView" destination="INb-4C-fsr" id="2WM-uf-lqu"/>
                 <outlet property="titleLabel" destination="CaO-eg-4p8" id="67K-Er-AXG"/>
             </connections>
             <point key="canvasLocation" x="-247.10144927536234" y="120.20089285714285"/>

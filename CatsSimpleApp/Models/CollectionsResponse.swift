@@ -26,23 +26,22 @@ struct Breed: Codable {
     let countryCode: String
     let breedDescription: String
     let lifeSpan: String
-    let indoor: Int
+    let indoor: Int?
     let lap: Int?
     let altNames: String?
-    let energyLevel: Int
-    let grooming: Int
-    let healthIssues: Int
-    let intelligence: Int
-    let sheddingLevel: Int
-    let socialNeeds: Int
-    let strangerFriendly: Int
-    let vocalisation: Int
-    let experimental: Int
-    let hairless: Int
-    let natural: Int
-    let rare: Int
-    let hypoallergenic: Int
-    let catFriendly: Int?
+    let affectionLevel: Int?
+    let energyLevel: Int?
+    let grooming: Int?
+    let healthIssues: Int?
+    let intelligence: Int?
+    let sheddingLevel: Int?
+    let socialNeeds: Int?
+    let vocalisation: Int?
+    let experimental: Int?
+    let hairless: Int?
+    let natural: Int?
+    let rare: Int?
+    let hypoallergenic: Int?
     let bidability: Int?
     let cfaURL: String?
     let vetstreetURL: String?
@@ -63,20 +62,19 @@ struct Breed: Codable {
         case indoor
         case lap
         case altNames = "alt_names"
+        case affectionLevel = "affection_level"
         case energyLevel = "energy_level"
         case grooming
         case healthIssues = "health_issues"
         case intelligence
         case sheddingLevel = "shedding_level"
         case socialNeeds = "social_needs"
-        case strangerFriendly = "stranger_friendly"
         case vocalisation
         case experimental
         case hairless
         case natural
         case rare
         case hypoallergenic
-        case catFriendly = "cat_friendly"
         case bidability
         case cfaURL = "cfa_url"
         case vetstreetURL = "vetstreet_url"
@@ -94,23 +92,22 @@ struct Breed: Codable {
         countryCode: "",
         breedDescription: "",
         lifeSpan: "",
-        indoor: 0,
+        indoor: nil,
         lap: nil,
         altNames: nil,
-        energyLevel: 0,
-        grooming: 0,
-        healthIssues: 0,
-        intelligence: 0,
-        sheddingLevel: 0,
-        socialNeeds: 0,
-        strangerFriendly: 0,
-        vocalisation: 0,
-        experimental: 0,
-        hairless: 0,
-        natural: 0,
-        rare: 0,
+        affectionLevel: nil,
+        energyLevel: nil,
+        grooming: nil,
+        healthIssues: nil,
+        intelligence: nil,
+        sheddingLevel: nil,
+        socialNeeds: nil,
+        vocalisation: nil,
+        experimental: nil,
+        hairless: nil,
+        natural: nil,
+        rare: nil,
         hypoallergenic: 0,
-        catFriendly: nil,
         bidability: nil,
         cfaURL: nil,
         vetstreetURL: nil,

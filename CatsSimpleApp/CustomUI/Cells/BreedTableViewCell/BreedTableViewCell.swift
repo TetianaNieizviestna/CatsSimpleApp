@@ -37,7 +37,7 @@ final class BreedTableViewCell: UITableViewCell {
     @IBOutlet private var loadedImageView: UIImageView!
     @IBOutlet private var imageViewWidthConstraint: NSLayoutConstraint!
     
-    @IBOutlet private var successBgView: UIView!
+    @IBOutlet private var originBgView: UIView!
     @IBOutlet private var originLabel: UILabel!
     
     override func awakeFromNib() {
@@ -56,7 +56,7 @@ final class BreedTableViewCell: UITableViewCell {
     private func setupUI() {
         loadedImageView.setCornersRadius(6)
         bgView.setCornersRadius(6)
-        successBgView.setCornersRadius(6)
+        originBgView.setCornersRadius(6)
     }
     
     func render(_ props: Props) {

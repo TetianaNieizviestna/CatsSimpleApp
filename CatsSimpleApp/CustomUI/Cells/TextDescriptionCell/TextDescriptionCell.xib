@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JHD-TZ-m7Z">
-                        <rect key="frame" x="0.0" y="3" width="320" height="56"/>
+                        <rect key="frame" x="0.0" y="5" width="320" height="52"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="cWM-Dx-I3c"/>
                         </constraints>
@@ -29,9 +29,9 @@
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="JHD-TZ-m7Z" secondAttribute="trailing" id="CKa-b6-kY7"/>
-                    <constraint firstItem="JHD-TZ-m7Z" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="3" id="TEW-NG-Iwg"/>
+                    <constraint firstItem="JHD-TZ-m7Z" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="TEW-NG-Iwg"/>
                     <constraint firstItem="JHD-TZ-m7Z" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="WQI-kR-V20"/>
-                    <constraint firstAttribute="bottom" secondItem="JHD-TZ-m7Z" secondAttribute="bottom" constant="3" id="hdx-c2-gul"/>
+                    <constraint firstAttribute="bottom" secondItem="JHD-TZ-m7Z" secondAttribute="bottom" constant="5" id="hdx-c2-gul"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

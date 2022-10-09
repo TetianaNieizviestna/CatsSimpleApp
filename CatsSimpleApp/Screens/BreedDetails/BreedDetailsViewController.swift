@@ -15,9 +15,9 @@ extension BreedDetailsViewController {
 
         let items: [Item]; enum Item {
             case text(TextDescriptionCell.Props)
-//            case tags(TagsTableViewCell.Props)
-//            case rate(RateTableViewCell.Props)
-//            case link(LinkTableViewCell.Props)
+            case tags(TagsTableViewCell.Props)
+            case rate(RateTableViewCell.Props)
+            case link(LinkTableViewCell.Props)
         }
         
         let onBack: Command
@@ -80,8 +80,9 @@ final class BreedDetailsViewController: UIViewController {
         tableView.setDataSource(self, delegate: self)
         tableView.register([
             TextDescriptionCell.identifier,
-//            TagsTableViewCell.identifier,
-//            RateTableViewCell.identifier,
+            TagsTableViewCell.identifier,
+            RateTableViewCell.identifier,
+            LinkTableViewCell.identifier
         ])
         tableView.tableFooterView = UIView(frame: .zero)
         
@@ -108,11 +109,12 @@ extension BreedDetailsViewController: UITableViewDelegate {
         switch props.items[indexPath.row] {
         case .text:
             break
-//        case .tags:
-//            break
-//        case .rate:
-//            break
-//        case .link(let cellProps):
+        case .tags:
+            break
+        case .rate:
+            break
+        case .link(let cellProps):
+            cellProps.didSelect.perform()
 //            props.onUrl.perform(with: cellProps)
         }
     }
@@ -130,14 +132,18 @@ extension BreedDetailsViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TextDescriptionCell.identifier) as? TextDescriptionCell else { return UITableViewCell() }
             cell.render(cellProps)
             return cell
-//        case .tags(let cellProps):
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: TagsTableViewCell.identifier) as? TagsTableViewCell else { return UITableViewCell() }
-//            cell.render(cellProps)
-//            return cell
-//        case .rate(let cellProps):
-//            guard let cell = tableView.dequeueReusableCell(withIdentifier: RateTableViewCell.identifier) as? RateTableViewCell else { return UITableViewCell() }
-//            cell.render(cellProps)
-//            return cell
+        case .tags(let cellProps):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TagsTableViewCell.identifier) as? TagsTableViewCell else { return UITableViewCell() }
+            cell.render(cellProps)
+            return cell
+        case .rate(let cellProps):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: RateTableViewCell.identifier) as? RateTableViewCell else { return UITableViewCell() }
+            cell.render(cellProps)
+            return cell
+        case .link(let cellProps):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LinkTableViewCell.identifier) as? LinkTableViewCell else { return UITableViewCell() }
+            cell.render(cellProps)
+            return cell
         }
     }
 }
