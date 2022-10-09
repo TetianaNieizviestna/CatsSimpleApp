@@ -17,7 +17,6 @@ final class AppCoordinator {
     private var photosService: PhotosLoader!
     private var breedsService: BreedsLoader!
 
-//    private var startCoordinator: PhotosListCoordinatorType?
     private var startCoordinator: BreedsListCoordinatorType?
 
     init(window: UIWindow) {
@@ -42,7 +41,6 @@ final class AppCoordinator {
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         
-//        startCoordinator = PhotosListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder)
         startCoordinator = BreedsListCoordinator(navigationController: navigationController, serviceHolder: serviceHolder)
         startCoordinator?.start()
     }

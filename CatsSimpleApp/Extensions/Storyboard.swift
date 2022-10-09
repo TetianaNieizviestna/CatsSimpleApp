@@ -10,6 +10,7 @@ import UIKit
 struct Storyboard {
     static let photosList = UIStoryboard(name: "PhotosList", bundle: nil)
     static let breedsList = UIStoryboard(name: "BreedsList", bundle: nil)
+    static let breedDetails = UIStoryboard(name: "BreedDetails", bundle: nil)
     static let photoDetails = UIStoryboard(name: "PhotoDetails", bundle: nil)
 }
 

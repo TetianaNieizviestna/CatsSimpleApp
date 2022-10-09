@@ -26,15 +26,8 @@
                                 <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="3cn-mB-2kX">
-                                <rect key="frame" x="15" y="107" width="360" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="fBa-0X-EKf"/>
-                                </constraints>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="cyQ-d9-CEw">
-                                <rect key="frame" x="15" y="166" width="360" height="644"/>
+                                <rect key="frame" x="15" y="107" width="360" height="703"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9cP-lx-KeK">
@@ -64,22 +57,18 @@
                             <constraint firstItem="juR-Ap-ra4" firstAttribute="top" secondItem="Dc3-DU-Lce" secondAttribute="top" constant="15" id="3cV-Ec-if5"/>
                             <constraint firstItem="Dc3-DU-Lce" firstAttribute="trailing" secondItem="cyQ-d9-CEw" secondAttribute="trailing" constant="15" id="3pB-PP-GaO"/>
                             <constraint firstItem="juR-Ap-ra4" firstAttribute="leading" secondItem="Dc3-DU-Lce" secondAttribute="leading" constant="15" id="Ah6-AI-DCn"/>
-                            <constraint firstItem="3cn-mB-2kX" firstAttribute="top" secondItem="juR-Ap-ra4" secondAttribute="bottom" constant="15" id="DYV-qX-gco"/>
-                            <constraint firstItem="Dc3-DU-Lce" firstAttribute="trailing" secondItem="3cn-mB-2kX" secondAttribute="trailing" constant="15" id="F8o-3t-ndm"/>
                             <constraint firstItem="cyQ-d9-CEw" firstAttribute="leading" secondItem="Dc3-DU-Lce" secondAttribute="leading" constant="15" id="JMG-KQ-RsK"/>
                             <constraint firstItem="9cP-lx-KeK" firstAttribute="centerY" secondItem="juR-Ap-ra4" secondAttribute="centerY" id="LfB-NG-Vfp"/>
                             <constraint firstItem="Dc3-DU-Lce" firstAttribute="trailing" secondItem="juR-Ap-ra4" secondAttribute="trailing" constant="15" id="Rcq-hX-rBB"/>
                             <constraint firstItem="ypr-e4-095" firstAttribute="centerX" secondItem="Dc3-DU-Lce" secondAttribute="centerX" id="U1O-dm-3pz"/>
                             <constraint firstItem="Dc3-DU-Lce" firstAttribute="bottom" secondItem="cyQ-d9-CEw" secondAttribute="bottom" id="fim-W4-BcA"/>
-                            <constraint firstItem="3cn-mB-2kX" firstAttribute="leading" secondItem="Dc3-DU-Lce" secondAttribute="leading" constant="15" id="g2j-Ez-yf4"/>
                             <constraint firstItem="Dc3-DU-Lce" firstAttribute="trailing" secondItem="9cP-lx-KeK" secondAttribute="trailing" constant="25" id="mwo-1u-Xgt"/>
                             <constraint firstItem="ypr-e4-095" firstAttribute="centerY" secondItem="Dc3-DU-Lce" secondAttribute="centerY" id="po0-eE-VBf"/>
-                            <constraint firstItem="cyQ-d9-CEw" firstAttribute="top" secondItem="3cn-mB-2kX" secondAttribute="bottom" constant="15" id="uaC-TE-8TR"/>
+                            <constraint firstItem="cyQ-d9-CEw" firstAttribute="top" secondItem="juR-Ap-ra4" secondAttribute="bottom" constant="15" id="pvK-hC-Bof"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="activityIndicator" destination="ypr-e4-095" id="dTh-RV-A4S"/>
-                        <outlet property="searchBar" destination="3cn-mB-2kX" id="m15-wC-qab"/>
                         <outlet property="sortBtn" destination="9cP-lx-KeK" id="9Sn-YX-JCc"/>
                         <outlet property="tableView" destination="cyQ-d9-CEw" id="UbQ-jn-DlC"/>
                         <outlet property="titleLabel" destination="juR-Ap-ra4" id="MNB-95-2ic"/>

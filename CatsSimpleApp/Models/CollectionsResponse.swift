@@ -23,6 +23,7 @@ struct Breed: Codable {
     
     let temperament: String
     let origin: String
+    let countryCode: String
     let breedDescription: String
     let lifeSpan: String
     let indoor: Int
@@ -56,6 +57,7 @@ struct Breed: Codable {
         
         case temperament
         case origin
+        case countryCode = "country_code"
         case breedDescription = "description"
         case lifeSpan = "life_span"
         case indoor
@@ -89,6 +91,7 @@ struct Breed: Codable {
         weight: nil,
         temperament: "",
         origin: "",
+        countryCode: "",
         breedDescription: "",
         lifeSpan: "",
         indoor: 0,
@@ -114,6 +117,15 @@ struct Breed: Codable {
         vcahospitalsURL: nil,
         wikipediaURL: nil
     )
+    
+    func getCountryFlagSymbol() -> String {
+        return countryCode
+            .unicodeScalars
+            .map({ 127397 + $0.value })
+            .compactMap(UnicodeScalar.init)
+            .map(String.init)
+            .joined()
+    }
 }
 
 // MARK: - Weight

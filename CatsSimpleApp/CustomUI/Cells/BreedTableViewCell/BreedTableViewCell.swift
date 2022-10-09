@@ -63,7 +63,7 @@ final class BreedTableViewCell: UITableViewCell {
         titleLabel.text = props.breed.name
         descriptionLabel.text = props.breed.breedDescription
         altNamesLabel.text = props.breed.altNames
-        originLabel.text = props.breed.origin
+        originLabel.text = "\(props.breed.getCountryFlagSymbol()) \(props.breed.origin)"
         loadedImageView.setImage(with: props.breed.image?.url)
     }
 }

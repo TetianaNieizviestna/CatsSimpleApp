@@ -34,12 +34,12 @@ final class BreedsListCoordinator: BreedsListCoordinatorType {
     }
     
     func onBreedDetails(_ breed: Breed) {
-//        let coordinator = BreedDetailsCoordinator(
-//            navigationController: navigationController,
-//            serviceHolder: serviceHolder,
-//            id: photoId
-//        )
-//        coordinator.start()
+        let coordinator = BreedDetailsCoordinator(
+            navigationController: navigationController,
+            serviceHolder: serviceHolder,
+            breed: breed
+        )
+        coordinator.start()
     }
     
     func dismiss() {

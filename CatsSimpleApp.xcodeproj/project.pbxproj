@@ -66,6 +66,10 @@
 		ABEF18A528F33CBE00250648 /* BreedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEF18A328F33CBE00250648 /* BreedTableViewCell.swift */; };
 		ABEF18A628F33CBE00250648 /* BreedTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABEF18A428F33CBE00250648 /* BreedTableViewCell.xib */; };
 		ABEF18A828F33ED400250648 /* BreedsLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEF18A728F33ED400250648 /* BreedsLoader.swift */; };
+		ABEF18AB28F3519900250648 /* BreedDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABEF18AA28F3519900250648 /* BreedDetails.storyboard */; };
+		ABEF18AD28F351FA00250648 /* BreedDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEF18AC28F351FA00250648 /* BreedDetailsViewModel.swift */; };
+		ABEF18AF28F3528100250648 /* BreedDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEF18AE28F3528100250648 /* BreedDetailsCoordinator.swift */; };
+		ABEF18B128F3533A00250648 /* BreedDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABEF18B028F3533A00250648 /* BreedDetailsViewController.swift */; };
 		ABFAAF9D287281E100FE8630 /* FullPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABFAAF9B287281E100FE8630 /* FullPhotoCollectionViewCell.swift */; };
 		ABFAAF9E287281E100FE8630 /* FullPhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ABFAAF9C287281E100FE8630 /* FullPhotoCollectionViewCell.xib */; };
 /* End PBXBuildFile section */
@@ -132,6 +136,10 @@
 		ABEF18A328F33CBE00250648 /* BreedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedTableViewCell.swift; sourceTree = "<group>"; };
 		ABEF18A428F33CBE00250648 /* BreedTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BreedTableViewCell.xib; sourceTree = "<group>"; };
 		ABEF18A728F33ED400250648 /* BreedsLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedsLoader.swift; sourceTree = "<group>"; };
+		ABEF18AA28F3519900250648 /* BreedDetails.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BreedDetails.storyboard; sourceTree = "<group>"; };
+		ABEF18AC28F351FA00250648 /* BreedDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedDetailsViewModel.swift; sourceTree = "<group>"; };
+		ABEF18AE28F3528100250648 /* BreedDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedDetailsCoordinator.swift; sourceTree = "<group>"; };
+		ABEF18B028F3533A00250648 /* BreedDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedDetailsViewController.swift; sourceTree = "<group>"; };
 		ABFAAF9B287281E100FE8630 /* FullPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		ABFAAF9C287281E100FE8630 /* FullPhotoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FullPhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		C716E4826CF095E03AD16FBC /* Pods_CatsSimpleApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CatsSimpleApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -265,6 +273,7 @@
 			isa = PBXGroup;
 			children = (
 				ABEF189928F335CD00250648 /* BreedsList */,
+				ABEF18A928F3517800250648 /* BreedDetails */,
 				AB21E26728662D0E0014BDF5 /* PhotoDetails */,
 				AB21E26C28662D0E0014BDF5 /* PhotosList */,
 			);
@@ -418,6 +427,17 @@
 			path = BreedTableViewCell;
 			sourceTree = "<group>";
 		};
+		ABEF18A928F3517800250648 /* BreedDetails */ = {
+			isa = PBXGroup;
+			children = (
+				ABEF18AC28F351FA00250648 /* BreedDetailsViewModel.swift */,
+				ABEF18AE28F3528100250648 /* BreedDetailsCoordinator.swift */,
+				ABEF18B028F3533A00250648 /* BreedDetailsViewController.swift */,
+				ABEF18AA28F3519900250648 /* BreedDetails.storyboard */,
+			);
+			path = BreedDetails;
+			sourceTree = "<group>";
+		};
 		ABFAAF9A287281D600FE8630 /* FullPhotoCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,6 +513,7 @@
 				AB93A2B428723CD300771549 /* TextDescriptionCell.xib in Resources */,
 				AB93A2A028720DDC00771549 /* PhotoDetailsHeaderView.xib in Resources */,
 				ABEF189828F2249500250648 /* FullPhotoTableViewCell.xib in Resources */,
+				ABEF18AB28F3519900250648 /* BreedDetails.storyboard in Resources */,
 				AB21E24328662B350014BDF5 /* LaunchScreen.storyboard in Resources */,
 				AB21E28D28662D0E0014BDF5 /* PhotoDetails.storyboard in Resources */,
 				AB93A2B928723E6000771549 /* ImageTextCell.xib in Resources */,
@@ -565,6 +586,7 @@
 				AB93A2AD2872326700771549 /* GetPhotosRequest.swift in Sources */,
 				AB93A27F286F783100771549 /* RsAPIError.swift in Sources */,
 				ABEF189428F2069000250648 /* UIButton+Combine.swift in Sources */,
+				ABEF18AF28F3528100250648 /* BreedDetailsCoordinator.swift in Sources */,
 				ABEF189728F2249500250648 /* FullPhotoTableViewCell.swift in Sources */,
 				AB21E27828662D0E0014BDF5 /* PhotoTableViewCell.swift in Sources */,
 				AB93A289286F90C400771549 /* DataFetcher.swift in Sources */,
@@ -591,9 +613,11 @@
 				ABEF189D28F3361E00250648 /* BreedsListViewController.swift in Sources */,
 				AB93A270286F783100771549 /* GetBreedsRequest.swift in Sources */,
 				AB21E23728662B330014BDF5 /* AppDelegate.swift in Sources */,
+				ABEF18AD28F351FA00250648 /* BreedDetailsViewModel.swift in Sources */,
 				AB21E29428662D0E0014BDF5 /* Style.swift in Sources */,
 				AB93A2B828723E6000771549 /* ImageTextCell.swift in Sources */,
 				AB21E27F28662D0E0014BDF5 /* UITableView.swift in Sources */,
+				ABEF18B128F3533A00250648 /* BreedDetailsViewController.swift in Sources */,
 				AB171281287A1E84000CE259 /* CollectionsResponse.swift in Sources */,
 				AB21E28A28662D0E0014BDF5 /* PhotoDetailsViewModel.swift in Sources */,
 				AB21E28328662D0E0014BDF5 /* Command.swift in Sources */,

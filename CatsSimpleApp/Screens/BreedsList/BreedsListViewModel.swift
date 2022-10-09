@@ -11,37 +11,12 @@ import UIKit
 
 typealias BreedsListProps = BreedsListViewController.Props
 
-//enum SortingType: String {
-//    case ascending = "ASC"
-//    case descending = "DESC"
-//    case random = "RAND"
-//
-//    var title: String {
-//        switch self {
-//        case .ascending:
-//            return "Ascending"
-//        case .descending:
-//            return "Descending"
-//        case .random:
-//            return "Random"
-//        }
-//    }
-//
-//    static let all: [SortingType] = [.ascending, .descending, .random]
-//}
-
 protocol BreedsListViewModelType {
     var stateSubscriber: PassthroughSubject<BreedsListViewController.Props, Never> { get }
-//    var diffableDataSource: PhotosTableViewDiffableDataSource! { get }
-//    var snapshot: NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props> { get }
-
 }
 
 final class BreedsListViewModel: BreedsListViewModelType {
     var stateSubscriber = PassthroughSubject<BreedsListViewController.Props, Never>()
-    
-//    var diffableDataSource: PhotosTableViewDiffableDataSource!
-//    var snapshot = NSDiffableDataSourceSnapshot<String?, PhotoTableViewCell.Props>()
 
     private let coordinator: BreedsListCoordinatorType
     private var breedsLoader: BreedsLoaderType
@@ -122,12 +97,7 @@ final class BreedsListViewModel: BreedsListViewModelType {
             }
         )
     }
-    
-    private func filter(by searchText: String) {
-        searchQuery = searchText
-        updateProps()
-    }
-    
+
     private func updateProps() {
         let props = BreedsListProps(
             state: screenState,
@@ -138,9 +108,6 @@ final class BreedsListViewModel: BreedsListViewModelType {
             },
             onNextPage: Command { [weak self] in
                 self?.loadNextPage()
-            },
-            onSearch: CommandWith { [weak self] text in
-                self?.filter(by: text)
             },
             onChangeSorting: CommandWith { [weak self] type in
                 self?.selectedSortType = type

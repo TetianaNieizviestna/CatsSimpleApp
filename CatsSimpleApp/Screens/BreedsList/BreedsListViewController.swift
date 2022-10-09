@@ -9,8 +9,6 @@ import UIKit
 import Combine
 import DropDown
 
-//class PhotosTableViewDiffableDataSource: UITableViewDiffableDataSource<String?, PhotoTableViewCell.Props> {}
-
 extension BreedsListViewController {
     struct Props {
         
@@ -28,7 +26,6 @@ extension BreedsListViewController {
         let onRefresh: Command
         let onNextPage: Command
         
-        let onSearch: CommandWith<String>
         let onChangeSorting: CommandWith<SortingType>
         
         static let initial: Props = .init(
@@ -37,7 +34,6 @@ extension BreedsListViewController {
             selectedSorting: .random,
             onRefresh: .nop,
             onNextPage: .nop,
-            onSearch: .nop,
             onChangeSorting: .nop
         )
     }
@@ -48,9 +44,7 @@ final class BreedsListViewController: UIViewController {
 
     var viewModel: BreedsListViewModelType!
     var props: Props = .initial
-    
-    @IBOutlet private var searchBar: UISearchBar!
-    
+        
     @IBOutlet private var titleLabel: UILabel!
     @IBOutlet private var sortBtn: UIButton!
         
@@ -115,7 +109,6 @@ final class BreedsListViewController: UIViewController {
     
     private func setupUI() {
         activityIndicator.hidesWhenStopped = true
-        searchBar.delegate = self
         setupTableView()
         sortBtn.setCornersRadius(3)
     }
@@ -153,12 +146,6 @@ extension BreedsListViewController: UICollectionViewDelegate {
                 props.onNextPage.perform()
             }
         }
-    }
-}
-
-extension BreedsListViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        props.onSearch.perform(with: searchText)
     }
 }
 
