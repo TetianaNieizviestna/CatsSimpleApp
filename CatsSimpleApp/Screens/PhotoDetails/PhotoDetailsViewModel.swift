@@ -1,6 +1,6 @@
 //
 //  PhotoDetailsViewModel.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna 
 //
@@ -69,9 +69,7 @@ final class PhotoDetailsViewModel: PhotoDetailsViewModelType{
                 self?.loadData()
             }
         )
-        DispatchQueue.main.async { [weak self] in
-            self?.stateSubscriber.send(props)
-        }
+        stateSubscriber.send(props)
     }
 }
 
@@ -83,31 +81,5 @@ extension PhotoDetailsViewModel {
     
     private func getSections() -> [Section] {
         return []
-//        var sections: [Section] = []
-
-//        if !launchDetails.crew.isEmpty {
-//            let crewSection = createCrewSection(crew: launchDetails.crew)
-//            sections.append(crewSection)
-//        }
-        
-//        return sections
     }
-    
-//    private func createCrewSection(crew: [CrewMember]) -> Section {
-//        let memberItems = crew.map { crewMember -> ImageTextCell.Props in
-//            return .init(
-//                imageUrl: crewMember.image ?? "",
-//                text: crewMember.name,
-//                didSelect: .nop
-//            )
-//        }
-//        let sectionItems = memberItems.map { memberItem -> LaunchDetailsProps.Item in
-//            return .imageText(memberItem)
-//        }
-//        return .init(
-//            title: "Crew",
-//            items: sectionItems
-//        )
-//    }
-
 }

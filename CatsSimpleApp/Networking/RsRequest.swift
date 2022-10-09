@@ -1,6 +1,6 @@
 //
 //  RsRequest.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
 //  Created by Tetiana Nieizviestna
 //
@@ -8,22 +8,16 @@
 import Foundation
 
 enum RsPath {
+    case breeds
     case photos
-    case collections
-    case collection(id: String)
-    case photosByCollection(id: String)
     case photo(id: String)
     
     var string: String {
         switch self {
+        case .breeds:
+            return "/breeds"
         case .photos:
             return "/images/search"
-        case .collections:
-            return "/collections"
-        case .collection(let id):
-            return "/collections/\(id)"
-        case .photosByCollection(let id):
-            return "/collections/\(id)/photos"
         case .photo(let id):
             return "/images/\(id)"
         }

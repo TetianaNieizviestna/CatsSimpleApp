@@ -1,8 +1,8 @@
 //
 //  DataFetcher.swift
-//  RocketsSchedule
+//  CatsSimpleApp
 //
-//  Created by Тетяна Нєізвєстна on 01.07.2022.
+//  Created by Tetiana Nieizviestna
 //
 
 import Foundation

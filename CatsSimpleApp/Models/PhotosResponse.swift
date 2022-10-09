@@ -59,8 +59,3 @@ struct Photo: Codable {
         breeds: []
     )
 }
-
-struct Breed: Codable {
-    let id: String
-    let name: String
-}
