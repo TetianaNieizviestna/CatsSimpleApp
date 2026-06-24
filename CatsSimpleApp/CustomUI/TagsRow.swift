@@ -13,13 +13,13 @@ struct TagsRow: View {
         HStack(spacing: Style.spacing.medium) {
             tag(country)
             if isHypoallergenic {
-                tag(.hypoallergenic)
+                tag("hypoallergenic".localized)
             }
             Spacer()
         }
     }
 
-    private func tag(_ text: LocalizedStringResource) -> some View {
+    private func tag(_ text: String) -> some View {
         Text(text)
             .font(.caption)
             .padding(.horizontal, Style.padding.default)
