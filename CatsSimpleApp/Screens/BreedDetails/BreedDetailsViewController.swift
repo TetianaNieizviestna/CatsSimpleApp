@@ -1,143 +1,57 @@
 //
-//  BreedDetailsViewController.swift
+//  BreedDetailsView.swift
 //  CatsSimpleApp
 //
-//  Created by Тетяна Нєізвєстна on 09.10.2022.
-//
 
-import UIKit
-import Combine
+import SwiftUI
 
-extension BreedDetailsViewController {
-    struct Props {
-        let title: String
-        let header: PhotoDetailsHeaderView.Props
+struct BreedDetailsView: View {
+    @State var viewModel: BreedDetailsViewModel
 
-        let items: [Item]; enum Item {
-            case text(TextDescriptionCell.Props)
-            case tags(TagsTableViewCell.Props)
-            case rate(RateTableViewCell.Props)
-            case link(LinkTableViewCell.Props)
+    var body: some View {
+        List {
+            Section {
+                PhotoHeaderView(url: viewModel.headerURL) {
+                    viewModel.openPhotos()
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+            }
+
+            Section {
+                TagsRow(country: viewModel.countryText, isHypoallergenic: viewModel.isHypoallergenic)
+            }
+
+            Section {
+                TextDescriptionRow(text: viewModel.breed.breedDescription)
+                if let temperament = viewModel.temperamentText {
+                    TextDescriptionRow(text: temperament)
+                }
+            }
+
+            if !viewModel.ratings.isEmpty {
+                Section("Ratings") {
+                    ForEach(viewModel.ratings, id: \.0) { item in
+                        RatingRow(title: item.0, starCount: item.1)
+                    }
+                }
+            }
+
+            if !viewModel.links.isEmpty {
+                Section("Links") {
+                    ForEach(viewModel.links, id: \.1) { item in
+                        Button {
+                            viewModel.openURL(item.1)
+                        } label: {
+                            LinkRow(type: item.0)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
         }
-        
-        let onBack: Command
-        let onPhoto: CommandWith<Photo>
-        let onUrl: CommandWith<String>
-
-        static let initial: Props = .init(
-            title: "",
-            header: .initial,
-            items: [],
-            onBack: .nop,
-            onPhoto: .nop,
-            onUrl: .nop
-        )
-    }
-}
-
-final class BreedDetailsViewController: UIViewController {
-    private var cancellables: Set<AnyCancellable> = []
-
-    private let headerHeight: CGFloat = 196
-
-    var viewModel: BreedDetailsViewModelType!
-    var props: Props = .initial
-    
-    @IBOutlet private var backBtn: UIButton!
-    @IBOutlet private var titleLabel: UILabel!
-    @IBOutlet private var tableView: UITableView!
-        
-    private let headerView = PhotoDetailsHeaderView()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-        
-        render(viewModel.getProps())
-    }
-    
-    private func render(_ props: Props) {
-        self.props = props
-        
-        updateHeaderFrame()
-        
-        titleLabel.text = props.title
-        tableView.reloadData()
-        headerView.render(props.header)
-    }
-    
-    private func setupUI() {
-        setupTableView()
-    }
-    
-    private func setupTableView() {
-        tableView.setDataSource(self, delegate: self)
-        tableView.register([
-            TextDescriptionCell.identifier,
-            TagsTableViewCell.identifier,
-            RateTableViewCell.identifier,
-            LinkTableViewCell.identifier
-        ])
-        tableView.tableFooterView = UIView(frame: .zero)
-        
-        updateHeaderFrame()
-        tableView?.tableHeaderView = headerView
-    }
-    
-    private func updateHeaderFrame() {
-        let size = tableView?.frame.size.width ?? 0
-        headerView.frame = .init(x: .zero, y: .zero, width: size, height: size)
-    }
-    
-    @IBAction private func backBtnAction(_ sender: UIButton) {
-        props.onBack.perform()
-    }
-    
-    deinit {
-//        propsSubscriber?.cancel()
-    }
-}
-
-extension BreedDetailsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch props.items[indexPath.row] {
-        case .text:
-            break
-        case .tags:
-            break
-        case .rate:
-            break
-        case .link(let cellProps):
-            cellProps.didSelect.perform()
-//            props.onUrl.perform(with: cellProps)
-        }
-    }
-}
-
-extension BreedDetailsViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return props.items.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch props.items[indexPath.row] {
-        case .text(let cellProps):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: TextDescriptionCell.identifier) as? TextDescriptionCell else { return UITableViewCell() }
-            cell.render(cellProps)
-            return cell
-        case .tags(let cellProps):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: TagsTableViewCell.identifier) as? TagsTableViewCell else { return UITableViewCell() }
-            cell.render(cellProps)
-            return cell
-        case .rate(let cellProps):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: RateTableViewCell.identifier) as? RateTableViewCell else { return UITableViewCell() }
-            cell.render(cellProps)
-            return cell
-        case .link(let cellProps):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: LinkTableViewCell.identifier) as? LinkTableViewCell else { return UITableViewCell() }
-            cell.render(cellProps)
-            return cell
-        }
+        .listStyle(.insetGrouped)
+        .navigationTitle(viewModel.title)
+        .toolbarTitleDisplayMode(.inline)
     }
 }

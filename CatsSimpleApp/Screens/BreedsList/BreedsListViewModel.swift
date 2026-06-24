@@ -2,111 +2,66 @@
 //  BreedsListViewModel.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
 import Foundation
-import Combine
-import UIKit
 
-typealias BreedsListProps = BreedsListViewController.Props
+@Observable
+@MainActor
+final class BreedsListViewModel {
+    enum State: Equatable {
+        case initial
+        case loading
+        case loaded
+        case failed(String)
+    }
 
-protocol BreedsListViewModelType {
-    var stateSubscriber: PassthroughSubject<BreedsListViewController.Props, Never> { get }
-}
+    private(set) var state: State = .initial
+    private(set) var breeds: [Breed] = []
 
-final class BreedsListViewModel: BreedsListViewModelType {
-    var stateSubscriber = PassthroughSubject<BreedsListViewController.Props, Never>()
-
-    private let coordinator: BreedsListCoordinatorType
-    private var breedsLoader: BreedsLoaderType
-
-    private var loadedBreeds: [Breed] = []
     private var pagination = Pagination()
-        
-    private var screenState: BreedsListProps.ScreenState = .initial {
-        didSet {
-            updateProps()
-        }
+    private let loader: BreedsLoaderType
+    private let router: AppRouter
+
+    init(loader: BreedsLoaderType, router: AppRouter) {
+        self.loader = loader
+        self.router = router
     }
-    
-    private var searchQuery: String?
-        
-    init(_ coordinator: BreedsListCoordinatorType, serviceHolder: ServiceHolder) {
-        self.coordinator = coordinator
-        
-        breedsLoader = serviceHolder.get(by: BreedsLoaderType.self)
-        loadPhotos()
+
+    func loadIfNeeded() async {
+        guard state == .initial else { return }
+        await load()
     }
-    
-    private func setScreenState(_ state: BreedsListProps.ScreenState) {
-        screenState = state
-        updateProps()
-    }
-    
-    private func loadPhotos() {
-        setScreenState(.loading)
-        
-        breedsLoader.loadBreeds(
-            pagination: pagination,
-            onSuccess: CommandWith { [weak self] breeds in
-                guard let self = self else { return }
-                if self.pagination.page == .zero {
-                    self.loadedBreeds = breeds
-                } else {
-                    self.loadedBreeds += breeds
-                }
-                if breeds.count < self.pagination.limit {
-                    self.pagination.stopLoading()
-                }
-                self.setScreenState(.loaded)
-            },
-            onFailure: CommandWith { [weak self] error in
-                self?.setScreenState(.failed(error))
-            }
-        )
-    }
-    
-    private func loadNextPage() {
-        if pagination.needMore {
-            pagination.increment()
-            loadPhotos()
-        }
-    }
-    
-    private func refresh() {
+
+    func refresh() async {
         pagination.reset()
-        loadPhotos()
+        await load()
     }
 
-    private func createItems() -> [BreedTableViewCell.Props] {
-        return loadedBreeds.map { self.createCellProps($0) }
-    }
-    
-    private func createCellProps(_ breedModel: Breed) -> BreedTableViewCell.Props {
-        return .init(
-            breed: breedModel,
-            onSelect: Command { [weak self] in
-                self?.coordinator.onBreedDetails(breedModel)
-            }
-        )
+    func loadNextPageIfNeeded(currentItem breed: Breed) async {
+        guard let last = breeds.last, last.id == breed.id else { return }
+        guard pagination.needMore, state != .loading else { return }
+        pagination.increment()
+        await load()
     }
 
-    private func updateProps() {
-        let props = BreedsListProps(
-            state: screenState,
-            items: createItems(),
-            onRefresh: Command { [weak self] in
-                self?.refresh()
-            },
-            onNextPage: Command { [weak self] in
-                self?.loadNextPage()
-            },
-            onPhotosList: Command { [weak self] in
-                self?.coordinator.onPhotosList()
+    func openBreed(_ breed: Breed) { router.push(.breedDetails(breed)) }
+    func openAllPhotos() { router.push(.photosList(breed: nil)) }
+
+    private func load() async {
+        state = .loading
+        do {
+            let newBreeds = try await loader.loadBreeds(pagination: pagination)
+            if pagination.page == 0 {
+                breeds = newBreeds
+            } else {
+                breeds += newBreeds
             }
-        )
-        
-        stateSubscriber.send(props)
+            if newBreeds.count < pagination.limit {
+                pagination.stopLoading()
+            }
+            state = .loaded
+        } catch {
+            state = .failed(error.localizedDescription)
+        }
     }
 }

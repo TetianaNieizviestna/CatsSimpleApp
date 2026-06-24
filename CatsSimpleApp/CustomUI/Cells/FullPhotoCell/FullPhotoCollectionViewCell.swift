@@ -1,43 +1,16 @@
 //
-//  LaunchDetailsPhotoCell.swift
-//  FaynoApp
-//
-//  Created by Tetiana Nieizviestna
+//  PhotoGridItem.swift
+//  CatsSimpleApp
 //
 
-import UIKit
+import SwiftUI
 
-extension FullPhotoCollectionViewCell {
-    func setupUI() {
-        contentView.backgroundColor = .clear
-        contentView.clipsToBounds = true
-        photoImageView?.backgroundColor = .clear
-        photoImageView?.setCornersRadius(7)
-    }
-}
+struct PhotoGridItem: View {
+    let url: URL?
 
-final class FullPhotoCollectionViewCell: UICollectionViewCell {
-    struct Props {
-        let url: URL?
-        let didSelect: Command
-        
-        static let initial: Props = .init(url: nil, didSelect: .nop)
-    }
-    
-    @IBOutlet private var photoImageView: UIImageView!
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        photoImageView.image = nil
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setupUI()
-    }
-    
-    func render(_ props: Props) {
-        photoImageView?.setImage(with: props.url)
+    var body: some View {
+        RemoteImage(url: url)
+            .aspectRatio(1, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 7))
     }
 }

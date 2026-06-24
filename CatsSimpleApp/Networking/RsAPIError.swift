@@ -2,38 +2,23 @@
 //  RsAPIError.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
 import Foundation
 
-struct RsAPIError: Error, Decodable, LocalizedError {
-    static let mapError = RsAPIError(
-        message: "Incorrect data",
-        code: -100
-    )
-    
-    static let serverError = RsAPIError(
-        message: "Server error",
-        code: -200
-    )
-    static let someError = RsAPIError(
-        message: "Something Wrong",
-        code: -300
-    )
-    static let badInternetError = RsAPIError(
-        message: "No internet connection",
-        code: -400
-    )
-    
-    let message: String
-    let code: Int
-    
+enum APIError: LocalizedError {
+    case invalidURL
+    case nonHTTPResponse
+    case serverStatus(Int)
+    case decoding(Error)
+    case transport(Error)
+
     var errorDescription: String? {
-        return message
-    }
-    
-    var localizedDescription: String {
-        return message
+        switch self {
+        case .invalidURL: return "Invalid URL"
+        case .nonHTTPResponse: return "Invalid server response"
+        case .serverStatus(let code): return "Server error (\(code))"
+        case .decoding: return "Failed to read response"
+        case .transport(let error): return error.localizedDescription
+        }
     }
 }

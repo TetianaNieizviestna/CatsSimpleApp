@@ -2,218 +2,52 @@
 //  BreedDetailsViewModel.swift
 //  CatsSimpleApp
 //
-//  Created by Тетяна Нєізвєстна on 09.10.2022.
-//
 
 import Foundation
 import UIKit
-import Combine
 
-typealias BreedDetailsProps = BreedDetailsViewController.Props
+@Observable
+@MainActor
+final class BreedDetailsViewModel {
+    let breed: Breed
+    private let router: AppRouter
 
-protocol BreedDetailsViewModelType {
-    func getProps() -> BreedDetailsProps
-}
-
-final class BreedDetailsViewModel: BreedDetailsViewModelType{
-    var stateSubscriber = PassthroughSubject<BreedDetailsProps, Never>()
-
-    private let coordinator: BreedDetailsCoordinatorType
-    
-    private var breed: Breed
-    
-    init(_ coordinator: BreedDetailsCoordinatorType, serviceHolder: ServiceHolder, breed: Breed) {
-        self.coordinator = coordinator
-        
+    init(breed: Breed, router: AppRouter) {
         self.breed = breed
+        self.router = router
     }
-    
-    func getProps() -> BreedDetailsProps {
-        return .init(
-            title: breed.name,
-            header: getHeaderItem(),
-            items: getItems(),
-            onBack: Command { [weak self] in
-                self?.coordinator.dismiss()
-            },
-            onPhoto: CommandWith { [weak self] photo in
-                self?.coordinator.onPhoto(photo)
-            },
-            onUrl: CommandWith { [weak self] url in
-                self?.coordinator.onUrl(url)
-            }
-        )
-    }
-}
 
-// MARK: Props creation
-extension BreedDetailsViewModel {
-    private func getHeaderItem() -> PhotoDetailsHeaderView.Props {
-        return PhotoDetailsHeaderView.Props.init(
-            url: URL(string: breed.image?.url ?? ""),
-            didSelect: Command { [weak self] in
-                guard let self = self else { return }
-                self.coordinator.onPhotosList(breed: self.breed)
-            }
-        )
+    var headerURL: URL? { URL(string: breed.image?.url ?? "") }
+    var title: String { breed.name }
+    var countryText: String { "\(breed.countryFlagSymbol) \(breed.origin)" }
+    var isHypoallergenic: Bool { breed.hypoallergenic == 1 }
+    var temperamentText: String? {
+        breed.temperament.isEmpty ? nil : "Temperament:\n\(breed.temperament)"
     }
-    
-    private func getItems() -> [BreedDetailsProps.Item] {
-        var items: [BreedDetailsProps.Item] = []
-        
-        let tagsItem = BreedDetailsProps.Item.tags(
-            .init(
-                country: "\(breed.getCountryFlagSymbol()) \(breed.origin)",
-                isHypoallergenic: breed.hypoallergenic == 1,
-                onSelect: .nop
-            )
-        )
-        items.append(tagsItem)
-        
-        let descriptionItem = BreedDetailsProps.Item.text(
-            .init(
-                text: breed.breedDescription,
-                didSelect: .nop
-            )
-        )
-        items.append(descriptionItem)
 
-        if !breed.temperament.isEmpty {
-            let temperamentItem = BreedDetailsProps.Item.text(
-                .init(
-                    text: "Temperament:\n\(breed.temperament)",
-                    didSelect: .nop
-                )
-            )
-            items.append(temperamentItem)
-        }
-        
-        let rateItems = getRateItems()
-        items.append(contentsOf: rateItems)
-        
-        let linkItems = getLinkItems()
-        items.append(contentsOf: linkItems)
-        
+    var ratings: [(String, Int)] {
+        var items: [(String, Int)] = []
+        if let v = breed.affectionLevel { items.append(("Affection Level", v)) }
+        if let v = breed.energyLevel { items.append(("Energy level", v)) }
+        if let v = breed.grooming { items.append(("Grooming", v)) }
+        if let v = breed.healthIssues { items.append(("Health Issues", v)) }
+        if let v = breed.intelligence { items.append(("Intelligence", v)) }
+        if let v = breed.sheddingLevel { items.append(("Shedding Level", v)) }
+        if let v = breed.socialNeeds { items.append(("Social Needs", v)) }
+        if let v = breed.vocalisation { items.append(("Vocalisation", v)) }
         return items
     }
-    
-    private func getRateItems() -> [BreedDetailsProps.Item] {
-        var rateProps: [RateTableViewCell.Props] = []
-        
-        if let affectionLevel = breed.affectionLevel {
-            let item = RateTableViewCell.Props(
-                text: "Affection Level",
-                starCount: affectionLevel,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let energyLevel = breed.energyLevel {
-            let item = RateTableViewCell.Props(
-                text: "Energy level",
-                starCount: energyLevel,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let grooming = breed.grooming {
-            let item = RateTableViewCell.Props(
-                text: "Grooming",
-                starCount: grooming,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let healthIssues = breed.healthIssues {
-            let item = RateTableViewCell.Props(
-                text: "Health Issues",
-                starCount: healthIssues,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let intelligence = breed.intelligence {
-            let item = RateTableViewCell.Props(
-                text: "Intelligence",
-                starCount: intelligence,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let sheddingLevel = breed.sheddingLevel {
-            let item = RateTableViewCell.Props(
-                text: "Shedding Level",
-                starCount: sheddingLevel,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let socialNeeds = breed.socialNeeds {
-            let item = RateTableViewCell.Props(
-                text: "Social Needs",
-                starCount: socialNeeds,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        if let vocalisation = breed.vocalisation {
-            let item = RateTableViewCell.Props(
-                text: "Vocalisation",
-                starCount: vocalisation,
-                didSelect: .nop
-            )
-            rateProps.append(item)
-        }
-        
-        return rateProps.map { .rate($0) }
+
+    var links: [(LinkType, URL)] {
+        var items: [(LinkType, URL)] = []
+        if let s = breed.wikipediaURL, let url = URL(string: s) { items.append((.wikipedia, url)) }
+        if let s = breed.cfaURL, let url = URL(string: s) { items.append((.cfa, url)) }
+        if let s = breed.vetstreetURL, let url = URL(string: s) { items.append((.vetstreet, url)) }
+        if let s = breed.vcahospitalsURL, let url = URL(string: s) { items.append((.vcaHospitals, url)) }
+        return items
     }
-    
-    private func getLinkItems() -> [BreedDetailsProps.Item] {
-        var linkProps: [LinkTableViewCell.Props] = []
-        
-        if let wikipediaItem = breed.wikipediaURL {
-            linkProps.append(.init(
-                linkType: .wikipedia,
-                didSelect: Command { [weak self] in
-                    self?.coordinator.onUrl(wikipediaItem)
-                }
-            ))
-        }
-        
-        if let cfaItem = breed.cfaURL {
-            linkProps.append(.init(
-                linkType: .cfa,
-                didSelect: Command { [weak self] in
-                    self?.coordinator.onUrl(cfaItem)
-                }
-            ))
-        }
-        
-        if let vetstreetItem = breed.vetstreetURL {
-            linkProps.append(.init(
-                linkType: .vetstreet,
-                didSelect: Command { [weak self] in
-                    self?.coordinator.onUrl(vetstreetItem)
-                }
-            ))
-        }
-        
-        if let vcaHospitalsItem = breed.vcahospitalsURL {
-            linkProps.append(.init(
-                linkType: .vcaHospitals,
-                didSelect: Command { [weak self] in
-                    self?.coordinator.onUrl(vcaHospitalsItem)
-                }
-            ))
-        }
-        
-        return linkProps.map { .link($0) }
-    }
+
+    func openPhotos() { router.push(.photosList(breed: breed)) }
+    func goBack() { router.pop() }
+    func openURL(_ url: URL) { UIApplication.shared.open(url) }
 }

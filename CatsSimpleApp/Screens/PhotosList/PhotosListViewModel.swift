@@ -1,150 +1,76 @@
 //
-//  LaunchListViewModel.swift
+//  PhotosListViewModel.swift
 //  CatsSimpleApp
-//
-//  Created by Tetiana Nieizviestna
 //
 
 import Foundation
-import Combine
-import UIKit
 
-typealias PhotosListProps = PhotosListViewController.Props
+@Observable
+@MainActor
+final class PhotosListViewModel {
+    enum State: Equatable {
+        case initial
+        case loading
+        case loaded
+        case failed(String)
+    }
 
-enum SortingType: String {
-    case ascending = "ASC"
-    case descending = "DESC"
-    case random = "RAND"
-    
-    var title: String {
-        switch self {
-        case .ascending:
-            return "Ascending"
-        case .descending:
-            return "Descending"
-        case .random:
-            return "Random"
+    private(set) var state: State = .initial
+    private(set) var photos: [Photo] = []
+    var sorting: SortingType = .random {
+        didSet {
+            guard sorting != oldValue else { return }
+            Task { await refresh() }
         }
     }
-    
-    static let all: [SortingType] = [.ascending, .descending, .random]
-}
 
-protocol PhotosListViewModelType {
-    var stateSubscriber: PassthroughSubject<PhotosListViewController.Props, Never> { get }
-}
+    let breed: Breed?
+    var title: String { breed?.name ?? "Cats" }
 
-final class PhotosListViewModel: PhotosListViewModelType {
-    var stateSubscriber = PassthroughSubject<PhotosListViewController.Props, Never>()
-    
-    private let coordinator: PhotosListCoordinatorType
-    private var photosLoader: PhotosLoaderType
-
-    private var loadedPhotos: [Photo] = []
     private var pagination = Pagination()
-    
-    private var selectedSortType: SortingType = .random {
-        didSet {
-            refresh()
-        }
-    }
-    
-    private var screenState: PhotosListProps.ScreenState = .initial {
-        didSet {
-            updateProps()
-        }
-    }
-    
-    private var breed: Breed?
-    
-    init(_ coordinator: PhotosListCoordinatorType, serviceHolder: ServiceHolder, breed: Breed?) {
-        self.coordinator = coordinator
+    private let loader: PhotosLoaderType
+    private let router: AppRouter
+
+    init(breed: Breed?, loader: PhotosLoaderType, router: AppRouter) {
         self.breed = breed
-        
-        photosLoader = serviceHolder.get(by: PhotosLoaderType.self)
-        loadPhotos()
-    }
-    
-    private func setScreenState(_ state: PhotosListProps.ScreenState) {
-        screenState = state
-        updateProps()
-    }
-    
-    private func loadPhotos() {
-        setScreenState(.loading)
-        
-        photosLoader.loadPhotos(
-            pagination: pagination,
-            breedId: breed?.id,
-            onSuccess: CommandWith { [weak self] photos in
-                guard let self = self else { return }
-                if self.pagination.page == .zero {
-                    self.loadedPhotos = photos
-                } else {
-                    self.loadedPhotos += photos
-                }
-                if photos.count < self.pagination.limit {
-                    self.pagination.stopLoading()
-                }
-                self.setScreenState(.loaded)
-            },
-            onFailure: CommandWith { [weak self] error in
-                self?.setScreenState(.failed(error))
-            }
-        )
-    }
-    
-    private func loadNextPage() {
-        if pagination.needMore {
-            pagination.increment()
-            loadPhotos()
-        }
-    }
-    
-    private func refresh() {
-        pagination.reset()
-        loadPhotos()
+        self.loader = loader
+        self.router = router
     }
 
-    private func createItems() -> [FullPhotoCollectionViewCell.Props] {
-        return loadedPhotos.map { self.createCellProps($0) }
+    func loadIfNeeded() async {
+        guard state == .initial else { return }
+        await load()
     }
-    
-    private func createCellProps(_ photo: Photo) -> FullPhotoCollectionViewCell.Props {
-        return .init(
-            url: URL(string: photo.url),
-            didSelect: Command { [weak self] in
-                self?.coordinator.onDetails(
-                    photoId: photo.id
-                )
+
+    func refresh() async {
+        pagination.reset()
+        await load()
+    }
+
+    func loadNextPageIfNeeded(currentItem photo: Photo) async {
+        guard let last = photos.last, last.id == photo.id else { return }
+        guard pagination.needMore, state != .loading else { return }
+        pagination.increment()
+        await load()
+    }
+
+    func openPhoto(_ photo: Photo) { router.push(.photoDetails(id: photo.id)) }
+
+    private func load() async {
+        state = .loading
+        do {
+            let newPhotos = try await loader.loadPhotos(pagination: pagination, breedId: breed?.id)
+            if pagination.page == 0 {
+                photos = newPhotos
+            } else {
+                photos += newPhotos
             }
-        )
-    }
-    
-    private func filter(by searchText: String) {
-        updateProps()
-    }
-    
-    private func updateProps() {
-        let props = PhotosListProps(
-            state: screenState,
-            title: breed?.name ?? "Cats",
-            items: createItems(),
-            selectedSorting: selectedSortType,
-            onRefresh: Command { [weak self] in
-                self?.refresh()
-            },
-            onNextPage: Command { [weak self] in
-                self?.loadNextPage()
-            },
-            onChangeSorting: CommandWith { [weak self] type in
-                self?.selectedSortType = type
-            },
-            onBack: Command {[weak self] in
-                self?.coordinator.onBack()
+            if newPhotos.count < pagination.limit {
+                pagination.stopLoading()
             }
-        )
-        
-        stateSubscriber.send(props)
+            state = .loaded
+        } catch {
+            state = .failed(error.localizedDescription)
+        }
     }
 }

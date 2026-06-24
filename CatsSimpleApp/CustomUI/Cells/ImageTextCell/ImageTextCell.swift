@@ -1,44 +1,22 @@
 //
-//  ImageTextCell.swift
+//  ImageTextRow.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
-import UIKit
+import SwiftUI
 
-extension ImageTextCell {
-    func setupUI() {
-        photoImageView?.roundedView()
-    }
-}
+struct ImageTextRow: View {
+    let imageURL: URL?
+    let text: String
 
-final class ImageTextCell: UITableViewCell {
-    struct Props {
-        let imageUrl: String
-        let text: String
-        let didSelect: Command
-        
-        static let initial: Props = .init(imageUrl: "", text: "", didSelect: .nop)
-    }
-    
-    @IBOutlet private var photoImageView: UIImageView!
-    @IBOutlet private var descriptionLabel: UILabel!
-    
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        photoImageView?.image = nil
-        descriptionLabel.text = nil
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setupUI()
-    }
-    
-    func render(_ props: Props) {
-        photoImageView?.setImage(with: props.imageUrl)
-        descriptionLabel.text = props.text
+    var body: some View {
+        HStack(spacing: 12) {
+            RemoteImage(url: imageURL)
+                .frame(width: 60, height: 60)
+                .clipShape(Circle())
+            Text(text)
+                .font(.body)
+            Spacer(minLength: 0)
+        }
     }
 }

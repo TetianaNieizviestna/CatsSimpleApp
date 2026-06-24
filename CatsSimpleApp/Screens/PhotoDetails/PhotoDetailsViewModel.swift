@@ -2,93 +2,53 @@
 //  PhotoDetailsViewModel.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna 
-//
 
-import UIKit
-import Combine
+import Foundation
 
-typealias PhotoDetailsProps = PhotoDetailsViewController.Props
-
-protocol PhotoDetailsViewModelType {
-    var stateSubscriber: PassthroughSubject<PhotoDetailsProps, Never> { get }
-}
-
-final class PhotoDetailsViewModel: PhotoDetailsViewModelType{
-    var stateSubscriber = PassthroughSubject<PhotoDetailsProps, Never>()
-
-    private let coordinator: PhotoDetailsCoordinatorType
-    private var launchesLoader: PhotosLoaderType
-
-    private var screenState: PhotoDetailsProps.ScreenState = .initial
-    
-    private var id: String
-
-    private var photo: Photo?
-    
-    init(_ coordinator: PhotoDetailsCoordinatorType, serviceHolder: ServiceHolder, id: String) {
-        self.coordinator = coordinator
-        launchesLoader = serviceHolder.get(by: PhotosLoaderType.self)
-        
-        self.id = id
-        
-        loadData()
+@Observable
+@MainActor
+final class PhotoDetailsViewModel {
+    enum State: Equatable {
+        case initial
+        case loading
+        case loaded
+        case failed(String)
     }
-    
-    private func setScreenState(_ state: PhotoDetailsProps.ScreenState) {
-        screenState = state
-        updateProps()
-    }
-    
-    private func loadData() {
-        setScreenState(.loading)
-        
-        launchesLoader.loadPhotoDetails(
-            id: id,
-            onSuccess: CommandWith { [weak self] photo in
-                self?.photo = photo
-                self?.setScreenState(.loaded)
-            },
-            onFailure: CommandWith { [weak self] error in
-                self?.setScreenState(.failed(error))
-            }
-        )
-    }
-    
-    private func updateProps() {
-        let props = PhotoDetailsProps(
-            state: screenState,
-            title: "Details",
-            header: getHeaderItem(),
-            details: "",
-            items: getItems(),
-            onBack: Command { [weak self] in
-                self?.coordinator.dismiss()
-            }, onRefresh: Command { [weak self] in
-                self?.loadData()
-            }
-        )
-        stateSubscriber.send(props)
-    }
-}
 
-// MARK: Props creation
-extension PhotoDetailsViewModel {
-    private func getHeaderItem() -> PhotoDetailsHeaderView.Props {
-        return PhotoDetailsHeaderView.Props.init(url: URL(string: photo?.url ?? ""), didSelect: .nop)
+    private(set) var state: State = .initial
+    private(set) var photo: Photo?
+
+    let photoId: String
+    private let loader: PhotosLoaderType
+    private let router: AppRouter
+
+    init(photoId: String, loader: PhotosLoaderType, router: AppRouter) {
+        self.photoId = photoId
+        self.loader = loader
+        self.router = router
     }
-    
-    private func getItems() -> [PhotoDetailsProps.Item] {
-        if let breeds = photo?.breeds {
-            return breeds.map { breed in
-                return .breed(.init(
-                    breed: breed,
-                    onSelect: Command { [weak self] in
-                        self?.coordinator.onBreedDetails(breed)
-                    })
-                )
-            }
+
+    var imageURL: URL? { URL(string: photo?.url ?? "") }
+    var breeds: [Breed] { photo?.breeds ?? [] }
+
+    func loadIfNeeded() async {
+        guard state == .initial else { return }
+        await load()
+    }
+
+    func refresh() async {
+        await load()
+    }
+
+    func openBreed(_ breed: Breed) { router.push(.breedDetails(breed)) }
+
+    private func load() async {
+        state = .loading
+        do {
+            photo = try await loader.loadPhoto(id: photoId)
+            state = .loaded
+        } catch {
+            state = .failed(error.localizedDescription)
         }
-        return []
     }
 }

@@ -2,25 +2,15 @@
 //  CollectionsResponse.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
 import Foundation
 
-extension Breed: DecodableResponse {
-    static func decode(data: Data, urlResponse: URLResponse) throws -> Breed {
-        return try JSONDecoder().decode(Breed.self, from: data)
-    }
-}
-
-typealias BreedsResponse = [Breed]
-
-struct Breed: Codable {
+struct Breed: Codable, Hashable, Identifiable {
     let id: String
     let name: String
     let image: Photo?
     let weight: Weight?
-    
+
     let temperament: String
     let origin: String
     let countryCode: String
@@ -53,7 +43,6 @@ struct Breed: Codable {
         case name
         case image
         case weight
-        
         case temperament
         case origin
         case countryCode = "country_code"
@@ -81,52 +70,21 @@ struct Breed: Codable {
         case vcahospitalsURL = "vcahospitals_url"
         case wikipediaURL = "wikipedia_url"
     }
-    
-    static let initial: Breed = .init(
-        id: "",
-        name: "",
-        image: nil,
-        weight: nil,
-        temperament: "",
-        origin: "",
-        countryCode: "",
-        breedDescription: "",
-        lifeSpan: "",
-        indoor: nil,
-        lap: nil,
-        altNames: nil,
-        affectionLevel: nil,
-        energyLevel: nil,
-        grooming: nil,
-        healthIssues: nil,
-        intelligence: nil,
-        sheddingLevel: nil,
-        socialNeeds: nil,
-        vocalisation: nil,
-        experimental: nil,
-        hairless: nil,
-        natural: nil,
-        rare: nil,
-        hypoallergenic: 0,
-        bidability: nil,
-        cfaURL: nil,
-        vetstreetURL: nil,
-        vcahospitalsURL: nil,
-        wikipediaURL: nil
-    )
-    
-    func getCountryFlagSymbol() -> String {
-        return countryCode
+
+    var countryFlagSymbol: String {
+        countryCode
             .unicodeScalars
-            .map({ 127397 + $0.value })
+            .map { 127397 + $0.value }
             .compactMap(UnicodeScalar.init)
             .map(String.init)
             .joined()
     }
+
+    static func == (lhs: Breed, rhs: Breed) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
 }
 
-// MARK: - Weight
-struct Weight: Codable {
+struct Weight: Codable, Hashable {
     let imperial: String
     let metric: String
 }

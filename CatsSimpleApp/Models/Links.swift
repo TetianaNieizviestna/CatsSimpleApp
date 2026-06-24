@@ -2,29 +2,20 @@
 //  Links.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
 import Foundation
 
-struct Links: Codable {
-    let linksSelf: String?
-    let html: String?
-    let download: String?
-    let downloadLocation: String?
-    let photos: String?
-    let likes: String?
-    let portfolio: String?
-    
-    
-    enum CodingKeys: String, CodingKey {
-        case linksSelf = "self"
-        case html
-        case download
-        case downloadLocation = "download_location"
-        case photos
-        case likes
-        case portfolio
+enum SortingType: String, CaseIterable, Identifiable, Codable {
+    case ascending = "ASC"
+    case descending = "DESC"
+    case random = "RAND"
 
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .ascending: return "Ascending"
+        case .descending: return "Descending"
+        case .random: return "Random"
+        }
     }
 }

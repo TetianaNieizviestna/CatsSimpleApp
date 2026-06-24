@@ -1,152 +1,122 @@
 //
-//  BreedsListViewController.swift
+//  BreedsListView.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
-import UIKit
-import Combine
-import DropDown
+import SwiftUI
 
-extension BreedsListViewController {
-    struct Props {
-        
-        let state: ScreenState; enum ScreenState {
-            case initial
-            case loading
-            case loaded
-            case failed(String)
-        }
-        
-        let items: [BreedTableViewCell.Props]
-        
-        let onRefresh: Command
-        let onNextPage: Command
-        let onPhotosList: Command
-        
-        static let initial: Props = .init(
-            state: .initial,
-            items: [],
-            onRefresh: .nop,
-            onNextPage: .nop,
-            onPhotosList: .nop
-        )
-    }
-}
+struct BreedsListView: View {
+    @State var viewModel: BreedsListViewModel
+    @Bindable var router: AppRouter
+    let services: AppServices
+    @State private var alertMessage: String?
 
-final class BreedsListViewController: UIViewController {
-    private var cancellables: Set<AnyCancellable> = []
-
-    var viewModel: BreedsListViewModelType!
-    var props: Props = .initial
-        
-    @IBOutlet private var titleLabel: UILabel!
-    @IBOutlet private var randomCatsBtn: UIButton!
-        
-    @IBOutlet private var tableView: UITableView!
-    
-    @IBOutlet private var activityIndicator: UIActivityIndicatorView!
-
-    private var refreshControl = UIRefreshControl()
-    private var propsSubscriber: AnyCancellable?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-        
-        propsSubscriber = viewModel.stateSubscriber
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] newProps in
-                self?.render(newProps)
-            })
-        
-        randomCatsBtn
-            .publisher(for: .touchUpInside)
-            .sink { [weak self] _ in
-                self?.props.onPhotosList.perform()
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func render(_ props: Props) {
-        self.props = props
-        
-        switch props.state {
-        case .initial:
-            activityIndicator.stopAnimating()
-            tableView.reloadData()
-        case .loading:
-            activityIndicator.startAnimating()
-        case .loaded:
-            activityIndicator.stopAnimating()
-            refreshControl.endRefreshing()
-            tableView.reloadData()
-        case .failed(let error):
-            activityIndicator.stopAnimating()
-            refreshControl.endRefreshing()
-            showAlert(title: "Error", message: error)
+    var body: some View {
+        NavigationStack(path: $router.path) {
+            content
+                .navigationDestination(for: Route.self) { route in
+                    destination(for: route)
+                }
         }
     }
-    
-    private func setupUI() {
-        activityIndicator.hidesWhenStopped = true
-        setupTableView()
-        randomCatsBtn.setCornersRadius(3)
-    }
 
-    private func setupTableView() {
-        tableView.setDataSource(self, delegate: self)
-        tableView.register([BreedTableViewCell.identifier])
+    private var content: some View {
+        ScrollView {
+            LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                Section {
+                    Button {
+                        viewModel.openAllPhotos()
+                    } label: {
+                        HStack {
+                            Image(systemName: "photo.on.rectangle.angled")
+                            Text("Show random cats")
+                                .font(.headline)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                    }
+                    .buttonStyle(.plain)
+                    Divider()
+                }
 
-        refreshControl.attributedTitle = NSAttributedString(string: "Loading...")
-        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
-        tableView.addSubview(refreshControl)
-    }
-        
-    @objc
-    private func refresh(_ sender: AnyObject) {
-        props.onRefresh.perform()
-    }
+                Section {
+                    ForEach(viewModel.breeds) { breed in
+                        Button {
+                            viewModel.openBreed(breed)
+                        } label: {
+                            BreedRow(breed: breed)
+                                .padding(.horizontal, 16)
+                        }
+                        .buttonStyle(.plain)
+                        .task { await viewModel.loadNextPageIfNeeded(currentItem: breed) }
+                        Divider()
+                    }
 
-    deinit {
-        propsSubscriber?.cancel()
-    }
-}
-
-extension BreedsListViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        props.items[indexPath.row].onSelect.perform()
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.item == props.items.count - 1 {
-            switch props.state {
-            case .loading:
-                break
-            default:
-                props.onNextPage.perform()
+                    if viewModel.state == .loading {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                            Spacer()
+                        }
+                        .padding(.vertical, 12)
+                    }
+                } header: {
+                    HStack {
+                        Text("Breeds")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(.systemBackground))
+                }
+                Spacer()
             }
         }
+        .refreshable { await viewModel.refresh() }
+        .task { await viewModel.loadIfNeeded() }
+        .onChange(of: viewModel.state) { _, newValue in
+            if case .failed(let message) = newValue {
+                alertMessage = message
+            }
+        }
+        .alert("Error", isPresented: Binding(
+            get: { alertMessage != nil },
+            set: { if !$0 { alertMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { alertMessage = nil }
+        } message: {
+            Text(alertMessage ?? "")
+        }
     }
-}
 
-extension BreedsListViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cellProps = props.items[indexPath.row]
-        cellProps.onSelect.perform()
-    }
-}
-
-extension BreedsListViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return props.items.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellProps = props.items[indexPath.row]
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: BreedTableViewCell.identifier) as? BreedTableViewCell else { return UITableViewCell() }
-        cell.render(cellProps)
-        return cell
+    @ViewBuilder
+    private func destination(for route: Route) -> some View {
+        switch route {
+        case .breedDetails(let breed):
+            BreedDetailsView(
+                viewModel: BreedDetailsViewModel(breed: breed, router: router)
+            )
+        case .photosList(let breed):
+            PhotosListView(
+                viewModel: PhotosListViewModel(
+                    breed: breed,
+                    loader: services.photosLoader,
+                    router: router
+                )
+            )
+        case .photoDetails(let id):
+            PhotoDetailsView(
+                viewModel: PhotoDetailsViewModel(
+                    photoId: id,
+                    loader: services.photosLoader,
+                    router: router
+                )
+            )
+        }
     }
 }

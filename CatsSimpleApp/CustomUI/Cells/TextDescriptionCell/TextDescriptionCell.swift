@@ -1,40 +1,16 @@
 //
-//  TextDescriptionCell.swift
+//  TextDescriptionRow.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
-import UIKit
+import SwiftUI
 
-extension TextDescriptionCell {
-    func setupUI() {
+struct TextDescriptionRow: View {
+    let text: String
 
-    }
-}
-
-final class TextDescriptionCell: UITableViewCell {
-    struct Props {
-        let text: String
-        let didSelect: Command
-        
-        static let initial: Props = .init(text: "", didSelect: .nop)
-
-    }
-    
-    @IBOutlet weak var descriptionLabel: UILabel!
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        descriptionLabel.text = nil
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setupUI()
-    }
-    
-    func render(_ props: Props) {
-        descriptionLabel.text = props.text
+    var body: some View {
+        Text(text)
+            .font(.body)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }

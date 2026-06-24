@@ -1,23 +1,20 @@
 //
-//  CacheHelper.swift
+//  StorageHelper.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
-import UIKit
+import Foundation
 
-class StorageHelper {
-    static let shared: StorageHelper = StorageHelper()
-    
+final class StorageHelper {
+    static let shared = StorageHelper()
+
     enum Keys {
         static let sort = "Launch.Sort"
     }
-    
+
     func saveData<T: Codable>(key: String, object: T) {
         if let data = try? JSONEncoder().encode(object) {
             UserDefaults.standard.set(data, forKey: key)
-            UserDefaults.standard.synchronize()
         }
     }
 

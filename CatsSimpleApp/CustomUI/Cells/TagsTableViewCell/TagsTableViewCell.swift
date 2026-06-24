@@ -1,60 +1,32 @@
 //
-//  TagsTableViewCell.swift
+//  TagsRow.swift
 //  CatsSimpleApp
 //
-//  Created by Тетяна Нєізвєстна on 09.10.2022.
-//
 
-import UIKit
-import Combine
+import SwiftUI
 
-extension TagsTableViewCell.Props: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(country)
-    }
-    
-    public static func == (lhs: TagsTableViewCell.Props, rhs: TagsTableViewCell.Props) -> Bool {
-        return lhs.country == rhs.country &&
-        lhs.isHypoallergenic == rhs.isHypoallergenic
-    }
-}
-class TagsTableViewCell: UITableViewCell {
-    struct Props {
-        let country: String
-        let isHypoallergenic: Bool
-        
-        let onSelect: Command
-        
-        static let initial: Props = .init(
-            country: "",
-            isHypoallergenic: false,
-            onSelect: .nop
-        )
-    }
-        
-    @IBOutlet private var originBgView: UIView!
-    @IBOutlet private var originLabel: UILabel!
-    
-    @IBOutlet private var hypoallergenicBgView: UIView!
-    @IBOutlet private var hypoallergenicLabel: UILabel!
+struct TagsRow: View {
+    let country: String
+    let isHypoallergenic: Bool
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setupUI()
+    var body: some View {
+        HStack(spacing: 8) {
+            tag(country)
+            if isHypoallergenic {
+                tag("Hypoallergenic")
+            }
+            Spacer(minLength: 0)
+        }
     }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-    }
-    
-    private func setupUI() {
-        originBgView.setCornersRadius(6)
-        hypoallergenicBgView.setCornersRadius(6)
-    }
-    
-    func render(_ props: Props) {
-        originLabel.text = props.country
-        hypoallergenicBgView.isHidden = !props.isHypoallergenic
+
+    private func tag(_ text: String) -> some View {
+        Text(text)
+            .font(.caption)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color(.systemGray5))
+            )
     }
 }

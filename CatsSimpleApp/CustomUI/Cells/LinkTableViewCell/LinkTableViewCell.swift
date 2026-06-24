@@ -1,60 +1,47 @@
 //
-//  LinkTableViewCell.swift
+//  LinkRow.swift
 //  CatsSimpleApp
 //
-//  Created by Тетяна Нєізвєстна on 09.10.2022.
-//
 
-import UIKit
-extension LinkTableViewCell {
-    func setupUI() {
-        contentView.backgroundColor = .clear
-        contentView.clipsToBounds = true
-        photoImageView?.backgroundColor = .clear
-        photoImageView?.setCornersRadius(7)
-    }
-}
-
-class LinkTableViewCell: UITableViewCell {
-    struct Props {
-        let linkType: LinkType
-        let didSelect: Command
-        
-        static let initial: Props = .init(linkType: .none, didSelect: .nop)
-    }
-    
-    @IBOutlet private var photoImageView: UIImageView!
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        photoImageView.image = nil
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        setupUI()
-    }
-    
-    func render(_ props: Props) {
-        photoImageView.image = props.linkType.image
-    }
-}
+import SwiftUI
 
 enum LinkType {
-    case wikipedia
-    case cfa
-    case vetstreet
-    case vcaHospitals
-    case none
-    
-    var image: UIImage? {
+    case wikipedia, cfa, vetstreet, vcaHospitals
+
+    var assetName: String {
         switch self {
-        case .none: return UIImage()
-        case .wikipedia: return UIImage(named: "wikipedia_logo")
-        case .cfa: return UIImage(named: "cfa_logo")
-        case .vetstreet: return UIImage(named: "vetstreet_logo")
-        case .vcaHospitals: return UIImage(named: "vcaHospitals_logo")
+        case .wikipedia: return "wikipedia_logo"
+        case .cfa: return "cfa_logo"
+        case .vetstreet: return "vetstreet_logo"
+        case .vcaHospitals: return "vcaHospitals_logo"
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .wikipedia: return "Wikipedia"
+        case .cfa: return "CFA"
+        case .vetstreet: return "Vetstreet"
+        case .vcaHospitals: return "VCA Hospitals"
+        }
+    }
+}
+
+struct LinkRow: View {
+    let type: LinkType
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(type.assetName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 7))
+            Text(type.label)
+                .font(.body)
+            Spacer()
+            Image(systemName: "arrow.up.right.square")
+                .foregroundStyle(.secondary)
         }
     }
 }

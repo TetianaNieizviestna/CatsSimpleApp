@@ -1,46 +1,51 @@
 //
-//  PhotoDetailsHeaderView.swift
+//  PhotoHeaderView.swift
 //  CatsSimpleApp
 //
-//  Created by Tetiana Nieizviestna
-//
 
-import UIKit
+import SwiftUI
 
-extension PhotoDetailsHeaderView {
-    func setupUI() {
-        photoImageView?.backgroundColor = .clear
-        photoImageView?.setCornersRadius(7)
+struct PhotoHeaderView: View {
+    let url: URL?
+    var onTap: (() -> Void)?
+
+    var body: some View {
+        RemoteImage(url: url, contentMode: .fill)
+            .aspectRatio(1, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 7))
+            .contentShape(Rectangle())
+            .onTapGesture { onTap?() }
     }
 }
 
-final class PhotoDetailsHeaderView: UIView {
-    struct Props {
-        let url: URL?
-        let didSelect: Command
-        
-        static let initial: Props = .init(url: nil, didSelect: .nop)
-    }
-    
-    private var props: Props = .initial
-    
-    @IBOutlet private var photoImageView: UIImageView!
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.nibSetup()
-        self.setupUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        self.nibSetup()
-        self.setupUI()
+struct RemoteImage: View {
+    let url: URL?
+    var contentMode: ContentMode = .fill
+
+    var body: some View {
+        AsyncImage(url: url, transaction: Transaction(animation: .easeInOut)) { phase in
+            switch phase {
+            case .success(let image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: contentMode)
+            case .failure, .empty:
+                placeholder
+            @unknown default:
+                placeholder
+            }
+        }
     }
 
-
-    func render(_ props: Props) {
-        self.props = props
-        photoImageView?.setImage(with: props.url)
+    @ViewBuilder
+    private var placeholder: some View {
+        ZStack {
+            Color(.systemGray6)
+            Image("placeholder_ic")
+                .resizable()
+                .scaledToFit()
+                .padding(24)
+                .opacity(0.5)
+        }
     }
 }
