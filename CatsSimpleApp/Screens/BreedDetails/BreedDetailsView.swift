@@ -6,13 +6,15 @@
 import SwiftUI
 
 struct BreedDetailsView: View {
-    @State var viewModel: BreedDetailsViewModel
+    @State
+    var viewModel: BreedDetailsViewModel
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
         List {
             Section {
                 PhotoHeaderView(url: viewModel.headerURL) {
-                    viewModel.openPhotos()
+                    router.push(.photosList(breed: viewModel.breed))
                 }
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
@@ -30,7 +32,7 @@ struct BreedDetailsView: View {
             }
 
             if !viewModel.ratings.isEmpty {
-                Section("Ratings") {
+                Section(.ratingsSection) {
                     ForEach(viewModel.ratings, id: \.0) { item in
                         RatingRow(title: item.0, starCount: item.1)
                     }
@@ -38,7 +40,7 @@ struct BreedDetailsView: View {
             }
 
             if !viewModel.links.isEmpty {
-                Section("Links") {
+                Section(.linksSection) {
                     ForEach(viewModel.links, id: \.1) { item in
                         Button {
                             viewModel.openURL(item.1)

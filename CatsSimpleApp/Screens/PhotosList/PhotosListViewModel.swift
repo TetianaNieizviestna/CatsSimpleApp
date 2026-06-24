@@ -17,28 +17,36 @@ final class PhotosListViewModel {
 
     private(set) var state: State = .initial
     private(set) var photos: [Photo] = []
+
     var sorting: SortingType = .random {
         didSet {
-            guard sorting != oldValue else { return }
-            Task { await refresh() }
+            guard sorting != oldValue else {
+                return
+            }
+            Task {
+                await refresh()
+            }
         }
     }
 
     let breed: Breed?
-    var title: String { breed?.name ?? "Cats" }
+
+    var title: String {
+        breed?.name ?? "Cats"
+    }
 
     private var pagination = Pagination()
     private let loader: PhotosLoaderType
-    private let router: AppRouter
 
-    init(breed: Breed?, loader: PhotosLoaderType, router: AppRouter) {
+    init(breed: Breed?, loader: PhotosLoaderType) {
         self.breed = breed
         self.loader = loader
-        self.router = router
     }
 
     func loadIfNeeded() async {
-        guard state == .initial else { return }
+        guard state == .initial else {
+            return
+        }
         await load()
     }
 
@@ -48,13 +56,15 @@ final class PhotosListViewModel {
     }
 
     func loadNextPageIfNeeded(currentItem photo: Photo) async {
-        guard let last = photos.last, last.id == photo.id else { return }
-        guard pagination.needMore, state != .loading else { return }
+        guard let last = photos.last,
+              last.id == photo.id,
+              pagination.needMore,
+              state != .loading else {
+            return
+        }
         pagination.increment()
         await load()
     }
-
-    func openPhoto(_ photo: Photo) { router.push(.photoDetails(id: photo.id)) }
 
     private func load() async {
         state = .loading

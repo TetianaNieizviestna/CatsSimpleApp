@@ -9,15 +9,16 @@ struct BreedRow: View {
     let breed: Breed
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            RemoteImage(url: URL(string: breed.image?.url ?? ""))
-                .frame(width: 96, height: 96)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
+        HStack(alignment: .top, spacing: Style.spacing.large) {
+            RemoteImage(url: breed.image?.url.asUrl())
+                .size(Style.image.large)
+                .cornerRadius(Style.corner.medium)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Style.spacing.default) {
                 Text(breed.name)
                     .font(.headline)
-                if let altNames = breed.altNames, !altNames.isEmpty {
+                if let altNames = breed.altNames,
+                    !altNames.isEmpty {
                     Text(altNames)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -28,15 +29,15 @@ struct BreedRow: View {
                     .lineLimit(3)
                 Text("\(breed.countryFlagSymbol) \(breed.origin)")
                     .font(.caption)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
+                    .padding(.horizontal, Style.padding.default)
+                    .padding(.vertical, Style.padding.extraSmall)
                     .background(
-                        RoundedRectangle(cornerRadius: 6)
+                        RoundedRectangle(cornerRadius: Style.corner.default)
                             .fill(Color(.systemGray5))
                     )
             }
-            Spacer(minLength: 0)
+            Spacer()
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, Style.padding.default)
     }
 }

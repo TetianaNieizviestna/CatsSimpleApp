@@ -10,22 +10,22 @@ struct TagsRow: View {
     let isHypoallergenic: Bool
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: Style.spacing.medium) {
             tag(country)
             if isHypoallergenic {
-                tag("Hypoallergenic")
+                tag(.hypoallergenic)
             }
-            Spacer(minLength: 0)
+            Spacer()
         }
     }
 
-    private func tag(_ text: String) -> some View {
+    private func tag(_ text: LocalizedStringResource) -> some View {
         Text(text)
             .font(.caption)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
+            .padding(.horizontal, Style.padding.default)
+            .padding(.vertical, Style.padding.small)
             .background(
-                RoundedRectangle(cornerRadius: 6)
+                RoundedRectangle(cornerRadius: Style.corner.default)
                     .fill(Color(.systemGray5))
             )
     }

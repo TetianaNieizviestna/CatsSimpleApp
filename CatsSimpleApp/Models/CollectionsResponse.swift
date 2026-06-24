@@ -80,8 +80,13 @@ struct Breed: Codable, Hashable, Identifiable {
             .joined()
     }
 
-    static func == (lhs: Breed, rhs: Breed) -> Bool { lhs.id == rhs.id }
-    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    static func == (lhs: Breed, rhs: Breed) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 struct Weight: Codable, Hashable {

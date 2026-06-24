@@ -9,7 +9,7 @@ final class StorageHelper {
     static let shared = StorageHelper()
 
     enum Keys {
-        static let sort = "Launch.Sort"
+        static let sort = "CatsBreed.Sort"
     }
 
     func saveData<T: Codable>(key: String, object: T) {

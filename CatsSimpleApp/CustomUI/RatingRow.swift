@@ -8,6 +8,7 @@ import SwiftUI
 struct RatingRow: View {
     let title: String
     let starCount: Int
+
     private let maxStars = 5
 
     var body: some View {

@@ -20,15 +20,15 @@ final class BreedsListViewModel {
 
     private var pagination = Pagination()
     private let loader: BreedsLoaderType
-    private let router: AppRouter
 
-    init(loader: BreedsLoaderType, router: AppRouter) {
+    init(loader: BreedsLoaderType) {
         self.loader = loader
-        self.router = router
     }
 
     func loadIfNeeded() async {
-        guard state == .initial else { return }
+        guard state == .initial else {
+            return
+        }
         await load()
     }
 
@@ -38,14 +38,15 @@ final class BreedsListViewModel {
     }
 
     func loadNextPageIfNeeded(currentItem breed: Breed) async {
-        guard let last = breeds.last, last.id == breed.id else { return }
-        guard pagination.needMore, state != .loading else { return }
+        guard let last = breeds.last,
+                last.id == breed.id,
+              pagination.needMore,
+              state != .loading else {
+            return
+        }
         pagination.increment()
         await load()
     }
-
-    func openBreed(_ breed: Breed) { router.push(.breedDetails(breed)) }
-    func openAllPhotos() { router.push(.photosList(breed: nil)) }
 
     private func load() async {
         state = .loading

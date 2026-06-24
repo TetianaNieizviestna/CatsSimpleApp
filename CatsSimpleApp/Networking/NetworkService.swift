@@ -12,6 +12,12 @@ protocol CatAPIType {
 }
 
 final class CatAPI: CatAPIType {
+    enum Keys {
+        static let apiKey = "x-api-key"
+        static let accept = "Accept"
+        static let acceptValue = "application/json"
+    }
+
     private let session: URLSession
     private let decoder: JSONDecoder
 
@@ -35,7 +41,9 @@ final class CatAPI: CatAPIType {
             "limit": "\(pagination.limit)",
             "page": "\(pagination.page)"
         ]
-        if let breedId { query["breed_id"] = breedId }
+        if let breedId {
+            query["breed_id"] = breedId
+        }
         return try await send(path: "/images/search", query: query)
     }
 
@@ -53,11 +61,13 @@ final class CatAPI: CatAPIType {
         if !query.isEmpty {
             components.queryItems = query.map { URLQueryItem(name: $0.key, value: $0.value) }
         }
-        guard let url = components.url else { throw APIError.invalidURL }
+        guard let url = components.url else {
+            throw APIError.invalidURL
+        }
 
         var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue(Defines.API.accessKey, forHTTPHeaderField: "x-api-key")
+        request.setValue(Keys.acceptValue, forHTTPHeaderField: Keys.accept)
+        request.setValue(Defines.API.accessKey, forHTTPHeaderField: Keys.apiKey)
 
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else {

@@ -14,11 +14,16 @@ enum APIError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidURL: return "Invalid URL"
-        case .nonHTTPResponse: return "Invalid server response"
-        case .serverStatus(let code): return "Server error (\(code))"
-        case .decoding: return "Failed to read response"
-        case .transport(let error): return error.localizedDescription
+        case .invalidURL:
+            "Invalid URL"
+        case .nonHTTPResponse:
+            "Invalid server response"
+        case .serverStatus(let code):
+            "Server error (\(code))"
+        case .decoding:
+            "Failed to read response"
+        case .transport(let error):
+            error.localizedDescription
         }
     }
 }

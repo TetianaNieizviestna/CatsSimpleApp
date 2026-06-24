@@ -8,21 +8,29 @@ import SwiftUI
 enum LinkType {
     case wikipedia, cfa, vetstreet, vcaHospitals
 
-    var assetName: String {
+    var assetName: ImageResource {
         switch self {
-        case .wikipedia: return "wikipedia_logo"
-        case .cfa: return "cfa_logo"
-        case .vetstreet: return "vetstreet_logo"
-        case .vcaHospitals: return "vcaHospitals_logo"
+        case .wikipedia:
+            .wikipediaLogo
+        case .cfa:
+            .cfaLogo
+        case .vetstreet:
+            .vetstreetLogo
+        case .vcaHospitals:
+            .vcaHospitalsLogo
         }
     }
 
-    var label: String {
+    var label: LocalizedStringResource {
         switch self {
-        case .wikipedia: return "Wikipedia"
-        case .cfa: return "CFA"
-        case .vetstreet: return "Vetstreet"
-        case .vcaHospitals: return "VCA Hospitals"
+        case .wikipedia:
+            .linkWikipedia
+        case .cfa:
+            .linkCfa
+        case .vetstreet:
+            .linkVetstreet
+        case .vcaHospitals:
+            .linkVcaHospitals
         }
     }
 }
@@ -31,11 +39,11 @@ struct LinkRow: View {
     let type: LinkType
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Style.spacing.large) {
             Image(type.assetName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
+                .size(Style.image.small)
                 .clipShape(RoundedRectangle(cornerRadius: 7))
             Text(type.label)
                 .font(.body)

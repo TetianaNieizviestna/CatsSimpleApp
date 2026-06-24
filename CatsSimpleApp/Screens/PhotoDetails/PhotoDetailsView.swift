@@ -6,8 +6,14 @@
 import SwiftUI
 
 struct PhotoDetailsView: View {
-    @State var viewModel: PhotoDetailsViewModel
-    @State private var alertMessage: String?
+    @Environment(AppRouter.self)
+    private var router
+
+    @State
+    var viewModel: PhotoDetailsViewModel
+
+    @State
+    private var alertMessage: String?
 
     var body: some View {
         List {
@@ -18,10 +24,10 @@ struct PhotoDetailsView: View {
             }
 
             if !viewModel.breeds.isEmpty {
-                Section("Breeds") {
+                Section(.breedsSection) {
                     ForEach(viewModel.breeds) { breed in
                         Button {
-                            viewModel.openBreed(breed)
+                            router.push(.breedDetails(breed))
                         } label: {
                             BreedRow(breed: breed)
                         }
@@ -36,20 +42,24 @@ struct PhotoDetailsView: View {
                 ProgressView()
             }
         }
-        .navigationTitle("Details")
+        .navigationTitle(.photosTitle)
         .toolbarTitleDisplayMode(.inline)
-        .refreshable { await viewModel.refresh() }
-        .task { await viewModel.loadIfNeeded() }
+        .refreshable {
+            await viewModel.refresh()
+        }
+        .task {
+            await viewModel.loadIfNeeded()
+        }
         .onChange(of: viewModel.state) { _, newValue in
             if case .failed(let message) = newValue {
                 alertMessage = message
             }
         }
-        .alert("Error", isPresented: Binding(
+        .alert(.alertError, isPresented: Binding(
             get: { alertMessage != nil },
             set: { if !$0 { alertMessage = nil } }
         )) {
-            Button("OK", role: .cancel) { alertMessage = nil }
+            Button(.buttonOk, role: .cancel) { alertMessage = nil }
         } message: {
             Text(alertMessage ?? "")
         }

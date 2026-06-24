@@ -10,9 +10,9 @@ struct PhotoHeaderView: View {
     var onTap: (() -> Void)?
 
     var body: some View {
-        RemoteImage(url: url, contentMode: .fill)
-            .aspectRatio(1, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 7))
+        RemoteImage(url: url, contentMode: .fit)
+            .scaledToFit()
+            .cornerRadius(Style.corner.default)
             .contentShape(Rectangle())
             .onTapGesture { onTap?() }
     }
@@ -41,10 +41,10 @@ struct RemoteImage: View {
     private var placeholder: some View {
         ZStack {
             Color(.systemGray6)
-            Image("placeholder_ic")
+            Image(.placeholderIc)
                 .resizable()
                 .scaledToFit()
-                .padding(24)
+                .padding(Style.padding.extraLarge)
                 .opacity(0.5)
         }
     }

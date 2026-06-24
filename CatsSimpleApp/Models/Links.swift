@@ -10,12 +10,18 @@ enum SortingType: String, CaseIterable, Identifiable, Codable {
     case descending = "DESC"
     case random = "RAND"
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
+
     var title: String {
         switch self {
-        case .ascending: return "Ascending"
-        case .descending: return "Descending"
-        case .random: return "Random"
+        case .ascending:
+            "Ascending"
+        case .descending:
+            "Descending"
+        case .random:
+            "Random"
         }
     }
 }

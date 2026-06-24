@@ -6,25 +6,33 @@
 import SwiftUI
 
 struct PhotosListView: View {
-    @State var viewModel: PhotosListViewModel
-    @State private var alertMessage: String?
+    @State
+    var viewModel: PhotosListViewModel
+    @Environment(AppRouter.self) private var router
+    @State
+    private var alertMessage: String?
 
-    private let columns = [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)]
+    private let columns = [
+        GridItem(.flexible(), spacing: Style.spacing.medium),
+        GridItem(.flexible(), spacing: Style.spacing.medium)
+    ]
 
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 8) {
+            LazyVGrid(columns: columns, spacing: Style.spacing.medium) {
                 ForEach(viewModel.photos) { photo in
                     Button {
-                        viewModel.openPhoto(photo)
+                        router.push(.photoDetails(id: photo.id))
                     } label: {
-                        PhotoGridItem(url: URL(string: photo.url))
+                        RemoteImage(url: photo.url.asUrl(), contentMode: .fit)
+                            .scaledToFit()
+                            .cornerRadius(Style.corner.default)
                     }
                     .buttonStyle(.plain)
                     .task { await viewModel.loadNextPageIfNeeded(currentItem: photo) }
                 }
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, Style.padding.default)
 
             if viewModel.state == .loading {
                 ProgressView()
@@ -33,8 +41,12 @@ struct PhotosListView: View {
         }
         .navigationTitle(viewModel.title)
         .toolbarTitleDisplayMode(.inline)
-        .refreshable { await viewModel.refresh() }
-        .task { await viewModel.loadIfNeeded() }
+        .refreshable {
+            await viewModel.refresh()
+        }
+        .task {
+            await viewModel.loadIfNeeded()
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -53,11 +65,11 @@ struct PhotosListView: View {
                 alertMessage = message
             }
         }
-        .alert("Error", isPresented: Binding(
+        .alert(.alertError, isPresented: Binding(
             get: { alertMessage != nil },
             set: { if !$0 { alertMessage = nil } }
         )) {
-            Button("OK", role: .cancel) { alertMessage = nil }
+            Button(.buttonOk, role: .cancel) { alertMessage = nil }
         } message: {
             Text(alertMessage ?? "")
         }

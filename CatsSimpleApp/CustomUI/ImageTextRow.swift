@@ -10,13 +10,13 @@ struct ImageTextRow: View {
     let text: String
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Style.spacing.large) {
             RemoteImage(url: imageURL)
-                .frame(width: 60, height: 60)
+                .size(Style.image.medium)
                 .clipShape(Circle())
             Text(text)
                 .font(.body)
-            Spacer(minLength: 0)
+            Spacer()
         }
     }
 }

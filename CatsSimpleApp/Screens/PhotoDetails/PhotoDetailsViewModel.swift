@@ -20,27 +20,30 @@ final class PhotoDetailsViewModel {
 
     let photoId: String
     private let loader: PhotosLoaderType
-    private let router: AppRouter
 
-    init(photoId: String, loader: PhotosLoaderType, router: AppRouter) {
+    init(photoId: String, loader: PhotosLoaderType) {
         self.photoId = photoId
         self.loader = loader
-        self.router = router
     }
 
-    var imageURL: URL? { URL(string: photo?.url ?? "") }
-    var breeds: [Breed] { photo?.breeds ?? [] }
+    var imageURL: URL? {
+        URL(string: photo?.url ?? "")
+    }
+
+    var breeds: [Breed] {
+        photo?.breeds ?? []
+    }
 
     func loadIfNeeded() async {
-        guard state == .initial else { return }
+        guard state == .initial else {
+            return
+        }
         await load()
     }
 
     func refresh() async {
         await load()
     }
-
-    func openBreed(_ breed: Breed) { router.push(.breedDetails(breed)) }
 
     private func load() async {
         state = .loading

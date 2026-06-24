@@ -7,20 +7,17 @@ import SwiftUI
 
 @main
 struct CatsSimpleAppApp: App {
-    @State private var services = AppServices()
-    @State private var router = AppRouter()
+    @State
+    private var services = AppServices()
 
     var body: some Scene {
         WindowGroup {
             BreedsListView(
                 viewModel: BreedsListViewModel(
-                    loader: services.breedsLoader,
-                    router: router
+                    loader: services.breedsLoader
                 ),
-                router: router,
                 services: services
             )
-            .environment(router)
             .preferredColorScheme(.light)
         }
     }
